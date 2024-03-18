@@ -10,9 +10,6 @@ import { ActionStore, GeneratorStore, TemplateStore } from './TemplateStore'
 
 const removeExtension = (file: string) => file.replace(/\.[cm]?[jt]s[x]?$/, '')
 
-// const generators = new Map<string, Generator>()
-// const actionsMap: ActionsMap = new Map()
-
 function resolveActionConflicts(
   generator: Generator,
   conflictStrategy: ConflictResolutionStrategy,
@@ -93,8 +90,6 @@ const loadGeneratorsForTemplate = (
     store.generators.add(currGenerator)
   }
 }
-
-
 
 export function loadGenerators(
   templates: ResolvedTemplatePathConfig[],

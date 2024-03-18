@@ -6,18 +6,16 @@ const fixture = (...segments) =>
 
 describe('params', () => {
   process.env.HYPERGEN_TS = '1337'
-
   beforeEach(() => {
     process.env.HYPERGEN_TMPLS = ''
   })
-
   // todo: figure out the intention and re-enable this test
   it('dont take template folder in template', async () => {
     const args = await params(
       {
         templates: [
           {
-            path: fixture('app-custom'),
+            path: fixture('template-folder-in-templates', '_templates'),
             prefix: '',
             pathChecked: false,
           },
@@ -30,11 +28,16 @@ describe('params', () => {
       action: 'foo',
       name: 'bar',
       subAction: undefined,
-      actionFolder: fixture('app-custom', 'dont-take-this', 'foo'),
+      actionFolder: fixture(
+        'template-folder-in-templates',
+        '_templates',
+        'dont-take-this',
+        'foo',
+      ),
       generator: 'dont-take-this',
       templates: [
         {
-          path: fixture('app-custom'),
+          path: fixture('template-folder-in-templates', '_templates'),
           pathChecked: false,
           prefix: '',
         },
@@ -45,12 +48,12 @@ describe('params', () => {
 
   // todo: figure out the intention and re-enable this test
   it('env var overrides local templates but still take explicitly given templates', async () => {
-    process.env.HYPERGEN_TMPLS = fixture('app-custom', 'tmpls')
+    process.env.HYPERGEN_TMPLS = fixture('templates-override', 'tmpls')
     const args = await params(
       {
         templates: [
           {
-            path: fixture('app-custom'),
+            path: fixture('templates-override', '_templates'),
             prefix: '',
             pathChecked: false,
           },
@@ -64,10 +67,15 @@ describe('params', () => {
       name: 'bar',
       subAction: undefined,
       generator: 'dont-take-this',
-      actionFolder: fixture('app-custom', 'dont-take-this', 'foo'),
+      actionFolder: fixture(
+        'templates-override',
+        '_templates',
+        'dont-take-this',
+        'foo',
+      ),
       templates: [
         {
-          path: fixture('app-custom'),
+          path: fixture('templates-override', '_templates'),
           pathChecked: false,
           prefix: '',
         },
