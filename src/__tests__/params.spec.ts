@@ -6,9 +6,11 @@ const fixture = (...segments) =>
 
 describe('params', () => {
   process.env.HYPERGEN_TS = '1337'
+
   beforeEach(() => {
     process.env.HYPERGEN_TMPLS = ''
   })
+
   // todo: figure out the intention and re-enable this test
   it('dont take template folder in template', async () => {
     const args = await params(

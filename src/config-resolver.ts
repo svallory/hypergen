@@ -7,6 +7,9 @@ import type {
   TemplateConfigObj,
 } from './types'
 import { ConfigResolver } from './config'
+import process = require('process')
+import process = require('process')
+import process = require('process')
 
 const configResolver = new ConfigResolver('.hypergen.js', {
   exists: fs.exists,
@@ -97,9 +100,9 @@ const resolveConfigSourcesTemplates = (
   hasValidPaths: boolean
   missingPaths: ResolvedTemplatePathConfig[]
 } => {
-  const seen: Map<string, { exists: boolean }> = new Map<
+  const seen: Map<string, ResolvedTemplatePathConfig> = new Map<
     string,
-    { exists: boolean }
+    ResolvedTemplatePathConfig
   >()
   let hasValidPaths = false
   const missingPaths: ResolvedTemplatePathConfig[] = []
@@ -116,10 +119,10 @@ const resolveConfigSourcesTemplates = (
       const resolvedPaths: ResolvedTemplatePathConfig[] = tplConfig
         .reverse()
         .map<ResolvedTemplatePathConfig>((tplConfig) => {
+          const existingPath = seen.get(tplConfig.path)
           const resolvedPath: ResolvedTemplatePathConfig = {
             ...tplConfig,
-            exists:
-              seen.has(tplConfig.path)?.exists || fs.existsSync(tplConfig.path),
+            exists: existingPath?.exists || fs.existsSync(tplConfig.path),
             overridden: seen.has(tplConfig.path),
             pathChecked: true,
           }
