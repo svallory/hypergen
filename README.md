@@ -2,6 +2,44 @@
   <img src="https://raw.githubusercontent.com/svallory/hypergen/master/media/hygen-to-hypergen.png" alt="hygen logo an arrow to the right and then the hypergen logo" height=300 />
 </h3>
 
+## What the fork?
+
+There are some features I need that have been pending for a while. I need to publish them as package in npm anyways, so why not share, right?
+
+Here's my whishlist
+
+- [x] Support for `cjs`/`mjs` files
+- [x] Multiple template directories
+- [x] Action conflict resolution via `config.conflictResolutionStrategy`
+    The property value would be an enum with 3 possible values:
+
+  - `fail`: [default] stops the generation and lets the user know that templates are in conflict, and it needs to pick a strategy
+  - `override`: keeps the template that appears last in the array
+  - `skip`: keeps the template that appeared first skipping the ones that conflict
+- [ ] Make it possible to use `hygen` and `hypergen` in the same machine/project
+  - [x] Change command name
+  - [ ] Change configuration file name
+
+- [ ] B.Y.O.T. (T is for template engine)
+
+  Although ejs isn't bad, I'm sure some people would prefer Mustache, Hogan, ...
+
+  I want to see if I can use [Marko JS](https://github.com/marko-js) to be the template language
+- [ ] Better documentation
+  - [ ] New features
+  - [ ] All configuration options
+  - [ ] A schema for the configuration file
+
+Have any wishes? [Open an issue!](https://github.com/svallory/hypergen/issues/new) 😊
+
+### Need a customization done ASAP?
+
+Let's chat! Checkout [my contacts here](https://aboute.me/saulovallory)
+
+If you prefer to stay on Github, there's a one-time donation option in my [sponsors profile](https://github.com/sponsors/svallory)
+
+## What is hygen / hypergen
+
 [![build status](https://img.shields.io/travis/jondot/hygen/master.svg)](https://travis-ci.org/jondot/hygen)
 [![npm version](https://img.shields.io/npm/v/hygen.svg)](https://www.npmjs.com/package/hygen)
 
