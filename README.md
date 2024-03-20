@@ -16,9 +16,9 @@ Here's my whishlist
   - `fail`: [default] stops the generation and lets the user know that templates are in conflict, and it needs to pick a strategy
   - `override`: keeps the template that appears last in the array
   - `skip`: keeps the template that appeared first skipping the ones that conflict
-- [ ] Make it possible to use `hygen` and `hypergen` in the same machine/project
+- [x] Make it possible to use `hygen` and `hypergen` in the same machine/project
   - [x] Change command name
-  - [ ] Change configuration file name
+  - [x] Change configuration file name
 
 - [ ] B.Y.O.T. (T is for template engine)
 

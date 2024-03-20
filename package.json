@@ -13,9 +13,7 @@
   "license": "MIT",
   "repository": "https://github.com/jondot/hygen",
   "main": "dist/index.js",
-  "bin": {
-    "hypergen": "./dist/bin.js"
-  },
+  "bin": "./dist/bin.js",
   "scripts": {
     "standalone": "rm -rf standalone; yarn build:lib && yarn pkg package.json --out-path standalone && node scripts/standalone.js",
     "standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
@@ -71,7 +69,10 @@
     "zeroconf-typescript-eslint": "^2.4.0"
   },
   "nodemonConfig": {
-    "ignore": ["**/test/**", "**/docs/**"],
+    "ignore": [
+      "**/test/**",
+      "**/docs/**"
+    ],
     "delay": 500
   },
   "jest": {

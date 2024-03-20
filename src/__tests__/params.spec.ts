@@ -5,10 +5,10 @@ const fixture = (...segments) =>
   path.join(__dirname, 'fixtures', 'templates', ...segments)
 
 describe('params', () => {
-  process.env.HYGEN_TS = '1337'
+  process.env.HYPERGEN_TS = '1337'
 
   beforeEach(() => {
-    process.env.HYGEN_TMPLS = ''
+    process.env.HYPERGEN_TMPLS = ''
   })
 
   // todo: figure out the intention and re-enable this test
@@ -45,7 +45,7 @@ describe('params', () => {
 
   // todo: figure out the intention and re-enable this test
   it('env var overrides local templates but still take explicitly given templates', async () => {
-    process.env.HYGEN_TMPLS = fixture('app-custom', 'tmpls')
+    process.env.HYPERGEN_TMPLS = fixture('app-custom', 'tmpls')
     const args = await params(
       {
         templates: [

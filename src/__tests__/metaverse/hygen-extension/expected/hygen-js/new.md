@@ -1,2 +1,2 @@
-this demonstrates hygen loaded up .hygen.js and extended helpers.
+this demonstrates hygen loaded up .hypergen.js and extended helpers.
 HELLO

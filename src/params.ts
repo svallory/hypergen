@@ -91,7 +91,7 @@ const params = async (
     },
     // include positionals as special arg for templates to consume,
     // and a unique timestamp for this run
-    { _, ts: process.env.HYGEN_TS || new Date().getTime() },
+    { _, ts: process.env.HYPERGEN_TS || new Date().getTime() },
     cleanArgv,
     name && { name },
     promptArgs,

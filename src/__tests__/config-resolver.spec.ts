@@ -75,7 +75,7 @@ describe('resolve', () => {
   })
 
   it('take templates from HYGEN_TMPLS env when it exists', async () => {
-    process.env.HYGEN_TMPLS = fixture('app-custom/other-templates')
+    process.env.HYPERGEN_TMPLS = fixture('app-custom/other-templates')
     expect(
       (
         await templateResolver(
@@ -86,6 +86,6 @@ describe('resolve', () => {
         )
       ).templates[0].path,
     ).toEqual(fixture('app-custom/other-templates'))
-    process.env.HYGEN_TMPLS = undefined
+    process.env.HYPERGEN_TMPLS = undefined
   })
 })

@@ -8,7 +8,7 @@ import type {
 } from './types'
 import { ConfigResolver } from './config'
 
-const configResolver = new ConfigResolver('.hygen.js', {
+const configResolver = new ConfigResolver('.hypergen.js', {
   exists: fs.exists,
   load: async (f) => await import(f),
   none: (_) => ({}),
@@ -201,8 +201,8 @@ const resolveTemplates = (
 
   // env should take precedence over the configs
   // this almost avoids a breaking change, but we should also throw if the value is invalid
-  if (process.env.HYGEN_TMPLS) {
-    const resolvedPath = pathResolve(process.env.HYGEN_TMPLS)
+  if (process.env.HYPERGEN_TMPLS) {
+    const resolvedPath = pathResolve(process.env.HYPERGEN_TMPLS)
 
     if (!fs.existsSync(resolvedPath)) {
       throw new Error(
@@ -245,7 +245,7 @@ const resolveTemplates = (
     throw new Error(
       `We tried and tried but could not find a templates folder. Here's where we've look:
 
-        1. a .hygen.js 'templatesOverride' config option (not present)
+        1. a .hypergen.js 'templatesOverride' config option (not present)
         2. HYGEN_TMPLS is not set
         3. The following paths from the 'templates' config option (all missing) ${missingPaths
           .map((t) => `      - ${t.path}`)

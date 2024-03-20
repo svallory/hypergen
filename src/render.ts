@@ -18,7 +18,7 @@ const ignores = [
   'index.js',
   'prompt.ts',
   'index.ts',
-  '.hygenignore',
+  '.hypergenignore',
   '.DS_Store',
   '.Spotlight-V100',
   '.Trashes',
@@ -30,7 +30,7 @@ const renderTemplate = (tmpl, locals, config) =>
 
 async function getFiles(dir) {
   const files = walk
-    .sync({ path: dir, ignoreFiles: ['.hygenignore'] })
+    .sync({ path: dir, ignoreFiles: ['.hypergenignore'] })
     .map((f) => path.join(dir, f))
   return files
 }

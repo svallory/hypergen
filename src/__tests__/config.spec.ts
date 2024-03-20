@@ -53,7 +53,7 @@ describe('resolver', () => {
     const load = jest.fn()
     load.mockReturnValue(Promise.resolve({ param: 1 }))
 
-    const resolver = new ConfigResolver('.hygen.js', {
+    const resolver = new ConfigResolver('.hypergen.js', {
       none: (_) => ({}),
       exists,
       load,
@@ -67,13 +67,13 @@ describe('resolver', () => {
     const exists = jest.fn((f) => {
       console.log('f', f)
 
-      return Promise.resolve(f.includes(path.join('foo', '.hygen.js')))
+      return Promise.resolve(f.includes(path.join('foo', '.hypergen.js')))
     })
 
     const load = jest.fn()
     load.mockReturnValue(Promise.resolve({ param: 1 }))
 
-    const resolver = new ConfigResolver('.hygen.js', {
+    const resolver = new ConfigResolver('.hypergen.js', {
       none: (_) => ({}),
       exists,
       load,
