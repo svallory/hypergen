@@ -29,7 +29,7 @@ const availableActions = (
 }
 
 const printHelp = (config: ResolvedRunnerConfig, logger: Logger) => {
-  logger.log(`Hygen v${VERSION}`)
+  logger.log(`HyperGen v${VERSION}`)
   logger.log('\nAvailable actions:')
 
   const actionsByGenerator = availableActions(
@@ -45,14 +45,14 @@ const printHelp = (config: ResolvedRunnerConfig, logger: Logger) => {
       This means I didn't find a _templates folder right here,
       or anywhere up the folder tree starting here.
 
-      Here's how to start using Hygen:
+      Here's how to start using Hyper Gen:
 
-      $ hygen init self
-      $ hygen with-prompt new --name my-generator
+      $ hypergen init self
+      $ hypergen with-prompt new --name my-generator
 
       (edit your generator in _templates/my-generator)
 
-      $ hygen my-generator
+      $ hypergen my-generator
 
       See https://hygen.io for more.
 

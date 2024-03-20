@@ -48,12 +48,13 @@ const resolvePositionals = (actionsMap, args) => __awaiter(void 0, void 0, void 
     init MyName (default, name=MyName), default because 'repo' does not exist
     init (default, name=[empty]), default always!
     */
-    const [generator, action, name] = args;
+    let [generator, action, name] = args;
     if (generator && action && actionsMap.has((0, generators_1.actionKeyFor)(generator, action))) {
         return [generator, action, name];
     }
     if (generator && actionsMap.has((0, generators_1.actionKeyFor)(generator, exports.DEFAULT_ACTION))) {
-        return [generator, exports.DEFAULT_ACTION, name];
+        action = exports.DEFAULT_ACTION;
+        [generator, name] = args;
     }
     return [generator, action, name];
 });
@@ -61,6 +62,8 @@ const params = (resolvedConfig, externalArgv) => __awaiter(void 0, void 0, void 
     const argv = (0, yargs_parser_1.default)(externalArgv);
     const { templates, conflictResolutionStrategy, createPrompter } = resolvedConfig;
     const { actionsMap } = (0, generators_1.loadGenerators)(templates, conflictResolutionStrategy);
+    // console.debug('generators', generators)
+    // console.debug(`actionsMap (items: ${actionsMap.size})`, actionsMap.entries())
     const [generator, action, name] = yield resolvePositionals(actionsMap, argv._);
     if (!generator || !action) {
         return { generator, action, templates };
@@ -83,7 +86,7 @@ const params = (resolvedConfig, externalArgv) => __awaiter(void 0, void 0, void 
     }, 
     // include positionals as special arg for templates to consume,
     // and a unique timestamp for this run
-    { _, ts: process.env.HYGEN_TS || new Date().getTime() }, cleanArgv, name && { name }, promptArgs);
+    { _, ts: process.env.HYPERGEN_TS || new Date().getTime() }, cleanArgv, name && { name }, promptArgs);
     return args;
 });
 exports.default = params;

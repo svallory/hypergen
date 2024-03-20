@@ -34,7 +34,7 @@ const injectOp = (action, args, { logger, cwd }) => __awaiter(void 0, void 0, vo
     if (!args.dry) {
         yield fs_extra_1.default.writeFile(absTo, injectResult);
     }
-    const pathToLog = process.env.HYGEN_OUTPUT_ABS_PATH ? absTo : to;
+    const pathToLog = process.env.HYPERGEN_OUTPUT_ABS_PATH ? absTo : to;
     logger.notice(`      inject: ${pathToLog}`);
     return result('inject');
 });

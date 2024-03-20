@@ -67,7 +67,7 @@ Object {
       "transform": [Function],
       "undasherize": [Function],
       "underscore": [Function],
-      "version": "1.12.0",
+      "version": "1.13.1",
     },
   },
   "name": "foobar",

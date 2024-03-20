@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -36,12 +40,20 @@ const fs_1 = __importDefault(require("fs"));
 const helpers_1 = __importDefault(require("./helpers"));
 const hooksfiles = [
     'index.js',
+    'index.cjs',
+    'index.mjs',
     'index.ts',
-    'prompt.cjs',
+    'index.cts',
+    'index.mts',
     'prompt.js',
+    'prompt.cjs',
+    'prompt.mjs',
     'prompt.ts',
+    'prompt.cts',
+    'prompt.mts',
 ];
 const prompt = (createPrompter, actionFolder, args) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const hooksfile = hooksfiles
         .map((f) => path_1.default.resolve(path_1.default.join(actionFolder, f)))
         .find((f) => fs_1.default.existsSync(f));
@@ -54,7 +66,7 @@ const prompt = (createPrompter, actionFolder, args) => __awaiter(void 0, void 0,
         require('ts-node/register/transpile-only');
     }
     // shortcircuit without prompter
-    let hooksModule = yield Promise.resolve().then(() => __importStar(require(hooksfile)));
+    let hooksModule = yield (_a = hooksfile, Promise.resolve().then(() => __importStar(require(_a))));
     if (hooksModule.default) {
         hooksModule = hooksModule.default;
     }

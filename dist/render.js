@@ -29,7 +29,7 @@ const ignores = [
     'index.js',
     'prompt.ts',
     'index.ts',
-    '.hygenignore',
+    '.hypergenignore',
     '.DS_Store',
     '.Spotlight-V100',
     '.Trashes',
@@ -40,7 +40,7 @@ const renderTemplate = (tmpl, locals, config) => typeof tmpl === 'string' ? ejs_
 function getFiles(dir) {
     return __awaiter(this, void 0, void 0, function* () {
         const files = ignore_walk_1.default
-            .sync({ path: dir, ignoreFiles: ['.hygenignore'] })
+            .sync({ path: dir, ignoreFiles: ['.hypergenignore'] })
             .map((f) => path_1.default.join(dir, f));
         return files;
     });

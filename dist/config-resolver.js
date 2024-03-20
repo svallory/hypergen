@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -34,9 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const config_1 = require("./config");
-const configResolver = new config_1.ConfigResolver('.hygen.js', {
+const configResolver = new config_1.ConfigResolver('.hypergen.js', {
     exists: fs_extra_1.default.exists,
-    load: (f) => __awaiter(void 0, void 0, void 0, function* () { return yield Promise.resolve().then(() => __importStar(require(f))); }),
+    load: (f) => __awaiter(void 0, void 0, void 0, function* () { var _a; return yield (_a = f, Promise.resolve().then(() => __importStar(require(_a)))); }),
     none: (_) => ({}),
 });
 /**
@@ -151,8 +155,8 @@ const resolveTemplates = (cwd, configs) => {
     }
     // env should take precedence over the configs
     // this almost avoids a breaking change, but we should also throw if the value is invalid
-    if (process.env.HYGEN_TMPLS) {
-        const resolvedPath = (0, path_1.resolve)(process.env.HYGEN_TMPLS);
+    if (process.env.HYPERGEN_TMPLS) {
+        const resolvedPath = (0, path_1.resolve)(process.env.HYPERGEN_TMPLS);
         if (!fs_extra_1.default.existsSync(resolvedPath)) {
             throw new Error(`Invalid HYGEN_TMPLS value: could not find ${overridingConfig} (resolved to: ${resolvedPath})`);
         }
@@ -171,7 +175,7 @@ const resolveTemplates = (cwd, configs) => {
         config: {
             templates: (0, path_1.resolve)(cwd, '_templates'),
         },
-        source: 'hygen default config',
+        source: 'hypergen default config',
     });
     const { resolvedConfigSources, hasValidPaths, missingPaths } = resolveConfigSourcesTemplates(cwd, configs);
     // if (missingPaths.length) {
@@ -185,7 +189,7 @@ const resolveTemplates = (cwd, configs) => {
     if (!hasValidPaths) {
         throw new Error(`We tried and tried but could not find a templates folder. Here's where we've look:
 
-        1. a .hygen.js 'templatesOverride' config option (not present)
+        1. a .hypergen.js 'templatesOverride' config option (not present)
         2. HYGEN_TMPLS is not set
         3. The following paths from the 'templates' config option (all missing) ${missingPaths
             .map((t) => `      - ${t.path}`)

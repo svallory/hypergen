@@ -1,11 +1,13 @@
-export declare type ActionsMap = Map<string, GeneratorInfo>;
+export interface Action {
+    name: string;
+    path: string;
+    generatorName: string;
+}
+export type ActionsMap = Map<string, Action>;
 export interface GeneratorInfo {
     name: string;
     path: string;
-    actions: Array<{
-        name: string;
-        path: string;
-    }>;
+    actions: Array<Action>;
 }
 export interface Logger {
     ok: (msg: string) => void;
@@ -27,8 +29,8 @@ export interface TemplateConfigObj {
     path: string;
     prefix?: string;
 }
-export declare type TemplatesConfigOption = string | Array<string | TemplateConfigObj>;
-export declare type ResolvedTemplatePathConfig = TemplateConfigObj & {
+export type TemplatesConfigOption = string | Array<string | TemplateConfigObj>;
+export type ResolvedTemplatePathConfig = TemplateConfigObj & {
     pathChecked: boolean;
     exists?: boolean;
     overridden?: boolean;
@@ -77,7 +79,7 @@ export interface ResolverIO {
     load: (arg0: string) => Promise<Record<string, any>>;
     none: (arg0: string) => Record<string, any>;
 }
-export declare type ActionResult = any;
+export type ActionResult = any;
 export interface RunnerResult {
     success: boolean;
     time: number;
@@ -87,7 +89,7 @@ export interface RunnerResult {
         availableActions: string[];
     };
 }
-export declare type ParamsResult = {
+export type ParamsResult = {
     templates: ResolvedTemplatePathConfig[];
     generator: string;
     action: string;

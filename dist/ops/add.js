@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
-const chalk_1 = require("chalk");
+const chalk_1 = __importDefault(require("chalk"));
 const result_1 = __importDefault(require("./result"));
 const add = (action, args, { logger, cwd, createPrompter }) => __awaiter(void 0, void 0, void 0, function* () {
     const { attributes: { to, inject, unless_exists, force, from, skip_if }, } = action;
@@ -30,13 +30,13 @@ const add = (action, args, { logger, cwd, createPrompter }) => __awaiter(void 0,
         logger.warn(`     skipped: ${to}`);
         return result('skipped');
     }
-    if (!process.env.HYGEN_OVERWRITE && fileExists && !force) {
+    if (!process.env.HYPERGEN_OVERWRITE && fileExists && !force) {
         if (!(yield prompter
             .prompt({
             prefix: '',
             type: 'confirm',
             name: 'overwrite',
-            message: (0, chalk_1.red)(`     exists: ${to}. Overwrite? (y/N): `),
+            message: chalk_1.default.red(`     exists: ${to}. Overwrite? (y/N): `),
         })
             .then(({ overwrite }) => overwrite))) {
             logger.warn(`     skipped: ${to}`);
@@ -56,7 +56,7 @@ const add = (action, args, { logger, cwd, createPrompter }) => __awaiter(void 0,
         yield fs_extra_1.default.ensureDir(path_1.default.dirname(absTo));
         yield fs_extra_1.default.writeFile(absTo, action.body);
     }
-    const pathToLog = process.env.HYGEN_OUTPUT_ABS_PATH ? absTo : to;
+    const pathToLog = process.env.HYPERGEN_OUTPUT_ABS_PATH ? absTo : to;
     logger.ok(`       ${force ? 'FORCED' : 'added'}: ${pathToLog}`);
     return result('added');
 });

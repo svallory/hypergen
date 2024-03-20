@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -48,7 +52,7 @@ const engine = (argv, config) => __awaiter(void 0, void 0, void 0, function* () 
     if (['-h', '--help'].includes(argv[0])) {
         logger.log(`
 Usage:
-  hygen [option] GENERATOR ACTION [--name NAME] [data-options]
+  hypergen [option] GENERATOR ACTION [--name NAME] [data-options]
 
 Options:
   -h, --help # Show this message and quit
@@ -67,14 +71,14 @@ Options:
         throw new ShowHelpError(`I can't find action '${action}' for generator '${generator}'.
 
       You can try:
-      1. 'hygen init self' to initialize your project, and
-      2. 'hygen generator new --name ${generator}' to build the generator you wanted.
+      1. 'hypergen init self' to initialize your project, and
+      2. 'hypergen generator new --name ${generator}' to build the generator you wanted.
 
       Check out the quickstart for more: https://hygen.io/docs/quick-start
       `);
     }
     // lazy loading these dependencies gives a better feel once
-    // a user is exploring hygen (not specifying what to execute)
+    // a user is exploring hypergen (not specifying what to execute)
     const execute = (yield Promise.resolve().then(() => __importStar(require('./execute')))).default;
     const render = (yield Promise.resolve().then(() => __importStar(require('./render')))).default;
     return execute(yield render(args, config), args, config);
