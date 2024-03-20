@@ -34,9 +34,9 @@ Have any wishes? [Open an issue!](https://github.com/svallory/hypergen/issues/ne
 
 ### Need a customization done ASAP?
 
-Let's chat! Checkout [my contacts here](https://aboute.me/saulovallory)
+Let's chat! Checkout [my contacts here](https://about.me/saulovallory)
 
-If you prefer to stay on Github, there's a one-time donation option in my [sponsors profile](https://github.com/sponsors/svallory)
+If you prefer to stay on Github, there's a one-time donation option in my [sponsors profile](https://github.com/sponsors/svallory?frequency=one-time&sponsor=svallory)
 
 ## What is hygen / hypergen
 
