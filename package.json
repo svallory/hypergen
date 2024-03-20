@@ -1,5 +1,5 @@
 {
-  "name": "hygen",
+  "name": "hypergen",
   "version": "6.2.11",
   "description": "The scalable code generator that saves you time.",
   "keywords": [
@@ -13,7 +13,9 @@
   "license": "MIT",
   "repository": "https://github.com/jondot/hygen",
   "main": "dist/index.js",
-  "bin": "./dist/bin.js",
+  "bin": {
+    "hypergen": "./dist/bin.js"
+  },
   "scripts": {
     "standalone": "rm -rf standalone; yarn build:lib && yarn pkg package.json --out-path standalone && node scripts/standalone.js",
     "standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
