@@ -98,5 +98,8 @@
       "node17-linux",
       "node17-win"
     ]
+  },
+  "engines": {
+    "node": ">=14.18.0"
   }
 }

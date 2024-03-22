@@ -1,41 +1,45 @@
 import { lstatSync, readdirSync } from 'fs'
 import { join as joinPath } from 'path'
 import type {
-  ActionsMap,
-  GeneratorInfo,
+  Action,
+  Generator,
   ResolvedTemplatePathConfig,
 } from './types'
 import { ConflictResolutionStrategy } from './types'
+import { ActionStore, GeneratorStore, TemplateStore } from './TemplateStore'
 
 const removeExtension = (file: string) => file.replace(/\.[cm]?[jt]s[x]?$/, '')
 
-export const actionKeyFor = (generator: string, action: string) =>
-  `${generator}::${removeExtension(action)}`
-
-const generators = new Map<string, GeneratorInfo>()
-const actionsMap: ActionsMap = new Map()
-
-const registerAction = (generatorName: string, name: string, path: string) =>
-  actionsMap.set(actionKeyFor(generatorName, name), {
-    name,
-    path,
-    generatorName,
-  })
+// const generators = new Map<string, Generator>()
+// const actionsMap: ActionsMap = new Map()
 
 function resolveActionConflicts(
-  generator: GeneratorInfo,
+  generator: Generator,
   conflictStrategy: ConflictResolutionStrategy,
+  store: TemplateStore
 ) {
   for (const action of generator.actions) {
-    const key = actionKeyFor(generator.name, action.name)
-    // console.debug('action map:', action.name, ' - ', key)
+    const newAction: Action = {
+      ...action,
+      generatorName: generator.name,
+      generatorPath: generator.path
+    };
 
-    if (actionsMap.has(key)) {
+    const existingAction = store.actions.find(action)
+
+    if (existingAction) {
+      const conflictingGenerator = store.generators.findByName(action.generatorName)
+
+      if (conflictingGenerator.length && conflictingGenerator[0].path === generator.path) {
+        // Actions are the same, it's not a conflict
+        continue;
+      }
+
       switch (conflictStrategy) {
         case ConflictResolutionStrategy.FAIL:
           throw new Error(`
-Action conflict: "${key}" defined by ${generator.path} was already
-defined by ${actionsMap.get(action.name).path}.
+Action conflict: "${store.actions.keyFor(action)}" defined by ${generator.path} was already
+defined by ${existingAction.path}.
 
 You are seeing this error because the 'conflictResolutionMode' is set to 'fail'.
 Update that value in your hygen config to
@@ -48,10 +52,10 @@ Update that value in your hygen config to
           continue
 
         case ConflictResolutionStrategy.OVERRIDE:
-          registerAction(generator.name, action.name, action.path)
+          store.actions.add(newAction)
       }
     } else {
-      registerAction(generator.name, action.name, action.path)
+      store.actions.add(newAction)
     }
   }
 }
@@ -64,45 +68,55 @@ Update that value in your hygen config to
 const loadGeneratorsForTemplate = (
   templatesFolder: ResolvedTemplatePathConfig,
   conflictStrategy: ConflictResolutionStrategy,
+  store: TemplateStore
 ): void => {
   const tplGenerators = readdirSync(templatesFolder.path).filter((_) =>
     lstatSync(joinPath(templatesFolder.path, _)).isDirectory(),
   )
 
-  for (const name of tplGenerators) {
-    const path = joinPath(templatesFolder.path, name)
-    const actions = readdirSync(path)
+  for (const generatorName of tplGenerators) {
+    const generatorPath = joinPath(templatesFolder.path, generatorName)
+    const currGeneratorActions = readdirSync(generatorPath)
 
-    const info: GeneratorInfo = {
-      name,
-      path,
-      actions: actions.map((action) => ({
-        name: action,
-        path: joinPath(path, removeExtension(action)),
-        generatorName: name,
+    const currGenerator: Generator = {
+      name: generatorName,
+      path: generatorPath,
+      actions: currGeneratorActions.map((action) => ({
+        name: removeExtension(action),
+        path: joinPath(generatorPath, removeExtension(action)),
+        generatorName,
+        generatorPath,
       })),
     }
 
-    resolveActionConflicts(info, conflictStrategy)
-    generators.set(name, info)
+    resolveActionConflicts(currGenerator, conflictStrategy, store)
+    store.generators.add(currGenerator)
   }
 }
+
+
 
 export function loadGenerators(
   templates: ResolvedTemplatePathConfig[],
   conflictStrategy: ConflictResolutionStrategy,
 ): {
-  generators: Map<string, GeneratorInfo>
-  actionsMap: ActionsMap
-} {
-  if (generators.size) return { generators, actionsMap }
+  generators: GeneratorStore
+  actions: ActionStore
+  } {
+  // There may be many situations when we actually want to reload the generators,
+  // here are 2 situations:
+  //   - successive calls to the engine with different set of templates folders
+  //   - in case of changes to the templates folders
+  //
+  // So, until this is clarified and planned for, the line below needs to remain
+  // commented:
+  // if (generators.size) return { generators, actions }
+
+  const store = new TemplateStore()
 
   for (const templateFolder of templates) {
-    loadGeneratorsForTemplate(templateFolder, conflictStrategy)
+    loadGeneratorsForTemplate(templateFolder, conflictStrategy, store)
   }
 
-  return {
-    generators,
-    actionsMap,
-  }
+  return store
 }

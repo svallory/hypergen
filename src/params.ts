@@ -1,14 +1,13 @@
-import { join as joinPath } from 'path'
 import yargs from 'yargs-parser'
-import fs from 'fs-extra'
 import type { ActionsMap, ParamsResult, ResolvedRunnerConfig } from './types'
 
 import prompt from './prompt'
-import { actionKeyFor, loadGenerators } from './generators';
+import { loadGenerators } from './generators';
 import { ShowHelpError } from './engine'
+import { type ActionStore } from './TemplateStore'
 export const DEFAULT_ACTION = '_default'
 
-const resolvePositionals = async (actionsMap: ActionsMap, args: string[]) => {
+const resolvePositionalArgs = async (actions: ActionStore, args: string[]) => {
   /*
   we want a to create flexible resolution and allow both:
 
@@ -29,11 +28,11 @@ const resolvePositionals = async (actionsMap: ActionsMap, args: string[]) => {
   */
   let [generator, action, name] = args
 
-  if (generator && action && actionsMap.has(actionKeyFor(generator, action))) {
+  if (generator && action && actions.exists(generator, action)) {
     return [generator, action, name]
   }
 
-  if (generator && actionsMap.has(actionKeyFor(generator, DEFAULT_ACTION))) {
+  if (generator && actions.exists(generator, DEFAULT_ACTION)) {
     action = DEFAULT_ACTION
     ;[generator, name] = args
   }
@@ -49,24 +48,37 @@ const params = async (
   const { templates, conflictResolutionStrategy, createPrompter } =
     resolvedConfig
 
-  const { actionsMap } = loadGenerators(templates, conflictResolutionStrategy)
+  const { actions, generators } = loadGenerators(templates, conflictResolutionStrategy)
 
   // console.debug('generators', generators)
   // console.debug(`actionsMap (items: ${actionsMap.size})`, actionsMap.entries())
 
-  const [generator, action, name] = await resolvePositionals(actionsMap, argv._)
+  const [generator, action, name] = await resolvePositionalArgs(actions, argv._)
 
   if (!generator || !action) {
     return { generator, action, templates }
   }
 
-  const targetAction = actionsMap.get(actionKeyFor(generator, action))
+  const targetAction = actions.find(generator, action)
 
   if (!targetAction) {
-    // todo: improve this error
-    throw new ShowHelpError(
-      `The action ${targetAction} does not exist in the ${generator} generator`,
-    )
+    const existingGenerators = generators.findByName(generator);
+    const existingActions = existingGenerators.reduce(
+      (actionsArr: string[], curr) => {
+        actionsArr.push(...curr.actions.map(a => a.name))
+        return actionsArr
+      }, [] as string[])
+
+    console.log(JSON.stringify(existingGenerators, null, 2))
+    throw new ShowHelpError(`
+The action "${action}" does not exist in the ${generator} generator.
+
+Existing actions:
+${ existingActions.map(a => `  - ${a}`)}
+
+Generator paths:
+${ existingGenerators.map(g => `  - ${g.path}`)}
+`)
   }
 
   const actionFolder = targetAction.path
@@ -74,7 +86,7 @@ const params = async (
   const { _, ...cleanArgv } = argv
   const promptArgs = await prompt(createPrompter, actionFolder, {
     // NOTE we might also want the rest of the generator/action/etc. params here
-    // but theres no usecase yet
+    // but theres no use case yet
     ...(name ? { name } : {}),
     ...cleanArgv,
   })
@@ -89,7 +101,7 @@ const params = async (
       action,
       subAction,
     },
-    // include positionals as special arg for templates to consume,
+    // include positional args as special arg for templates to consume,
     // and a unique timestamp for this run
     { _, ts: process.env.HYPERGEN_TS || new Date().getTime() },
     cleanArgv,
