@@ -1,6 +1,6 @@
 {
   "name": "hypergen",
-  "version": "7.0.0-rc.1",
+  "version": "7.0.0-rc.2",
   "description": "The scalable code generator that saves you time.",
   "keywords": [
     "template",
@@ -10,17 +10,36 @@
     "redux",
     "react"
   ],
+  "author": {
+    "name": "Saulo Vallory",
+    "email": "saulo@toki.life",
+    "url": "https://saulo.engineer"
+  },
+  "contributors": [
+    {
+      "name": "Dotan J. Nahum (original author)",
+      "email": "dn@rng0.io",
+      "url": "https://medium.com/@jondot"
+    }
+  ],
   "license": "MIT",
-  "repository": "https://github.com/jondot/hygen",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/svallory/hypergen.git"
+  },
   "main": "dist/index.js",
-  "bin": "./dist/bin.js",
+  "bin": {
+    "hypergen": "dist/bin.js"
+  },
   "scripts": {
     "standalone": "rm -rf standalone; yarn build:lib && yarn pkg package.json --out-path standalone && node scripts/standalone.js",
     "standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
     "build:changelog": "conventional-changelog -i CHANGELOG.md -p angular > CHANGELOG.md",
     "build:lib": "tsc",
+    "prebuild": "echo 'Building...'",
     "build": "yarn build:lib && yarn build:changelog",
-    "release": "yarn build && git commit -am 'build'; yarn version && git push --tags && git push origin master",
+    "postbuild": "echo 'Done building!'",
+    "prepack": " yarn build",
     "test:win32": "yarn jest --runInBand --testPathIgnorePatterns '.*metaverse-conditional.*'",
     "test": "yarn test:code && yarn test:require",
     "test:code": "yarn jest --runInBand",

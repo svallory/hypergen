@@ -4,9 +4,10 @@
 
 ## What the fork?
 
-There are some features I need that have been pending for a while. I need to publish them as package in npm anyways, so why not share, right?
+Hygen is an awesome tool, but I needed some extra features to better support [moon-launch](https://github.com/svallory/moon-launch).
+Since I needed to publish them as package in npm anyways to share with my team, why not share, right?
 
-Here's my whishlist
+## Here's my wishlist (a.k.a. The Roadmap)
 
 - [x] Support for `cjs`/`mjs` files
 - [x] Multiple template directories
@@ -19,6 +20,77 @@ Here's my whishlist
 - [x] Make it possible to use `hygen` and `hypergen` in the same machine/project
   - [x] Change command name
   - [x] Change configuration file name
+- [x] Ability to deal with hundreds of generators
+- [ ] File-based template routing
+  - [ ] `to:` in frontmatter becomes optional
+
+  - [ ] Define and document renaming rules when there's no `to:` in the frontmatter (for example: automatic removal of .ejs extension)
+
+  - [ ] All files are copied unless their path (from the generator root) contains the word "partial[s]?"
+    anywhere. Meaning that:
+
+    These would not be generated:
+
+    - generator/**partials**/helpers.ejs
+    - generator/**partial**-helpers.js
+    - generator/my-**partials**-file.js
+    - generator/helpers.**partial**.ts
+
+    But these would:
+
+    - generator/**partially**.ejs
+    - generator/im**partial**-note.md
+
+    **NOTE:** you'll be able to configure the partial matching rule via a `filterFiles` property
+    which can be a regular expression or a filter function `(path: string) => boolean`.
+
+  - [ ] Dynamic file routing
+
+    A new configuration option that allows the template maker to define a function that will be called
+    to determine where the template file should be generated:
+
+    ```typescript
+    type fileRouter = (path: string, content: string) => boolean
+    ```
+
+
+- [ ] Support [moon's template.yml](https://moonrepo.dev/docs/config/template) configuration file
+  - [ ] Add support for generator extension via `extends`
+  - [ ] Allow simple prompts to be defined via `variables` by setting `prompt` to any `string`
+  - [ ] Prevent the use of prompt in `variables` and `prompt.js` at the same time
+
+  Moon's template.yml is well thought out. I see no need to invent a new format from scratch
+
+- [ ] Support Extension and Composition among Generators
+  - [ ] **Extension:** add support for the `extends` option following the same rules moon uses
+  - [ ] **Composition:**
+
+    > **needs planning**
+
+    Being able to compose generators means that individual actions or templates from other generators
+    can be imported and executed.
+
+    **First idea:**
+    To define lifecycle hooks and allow them to be used in `template.yml` to execute:
+
+    - external generator's actions
+    - internal scripts
+    - any command?
+
+
+- [ ] **[breaking change]** Change the command line arguments to:
+
+  ```shell
+  hypergen PATH/TO/GENERATOR:FILE_FILTER DESTINATION [--param1 value, --param2 value, ...]
+  ```
+
+  If not provided, the destination setting configured in template.yml will be used, or you'll be prompted during generation to provide one.
+
+  **Why?**
+  This will allow hypergen to:
+  - Accept a target directory
+  - Simplify resolution rules
+  - Reduce conflicts in generator actions
 
 - [ ] B.Y.O.T. (T is for template engine)
 
