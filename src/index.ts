@@ -13,9 +13,10 @@ const runner = async (
   const { logger } = resolvedConfig
   try {
     const actions = await engine(argv, resolvedConfig)
+    console.debug("engine returned actions:", actions)
     return { success: true, actions, time: 0 }
   } catch (err) {
-    logger.log(err.toString())
+    logger.log(err.toString() + '\n' + err.stack)
     if (resolvedConfig.debug) {
       logger.log('details -----------')
       logger.log(err.stack)
