@@ -1,6 +1,6 @@
 {
   "name": "hypergen",
-  "version": "7.0.0-rc.1",
+  "version": "7.0.0-rc.2",
   "description": "The scalable code generator that saves you time.",
   "keywords": [
     "template",
@@ -20,7 +20,7 @@
     "build:changelog": "conventional-changelog -i CHANGELOG.md -p angular > CHANGELOG.md",
     "build:lib": "tsc",
     "build": "yarn build:lib && yarn build:changelog",
-    "release": "yarn build && git commit -am 'build'; yarn version && git push --tags && git push origin master",
+    "prepack": "yarn build",
     "test:win32": "yarn jest --runInBand --testPathIgnorePatterns '.*metaverse-conditional.*'",
     "test": "yarn test:code && yarn test:require",
     "test:code": "yarn jest --runInBand",
