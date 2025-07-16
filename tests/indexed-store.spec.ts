@@ -1,5 +1,6 @@
+import { describe, it, expect, beforeEach } from 'bun:test'
 // In __tests__/SimpleIndexedStore.test.ts
-import { SimpleIndexedStore, TestItem } from './indexed-store.helpers';
+import { SimpleIndexedStore, TestItem } from './util/indexed-store.helpers.js';
 
 describe('SimpleIndexedStore', () => {
   let store: SimpleIndexedStore;

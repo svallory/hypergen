@@ -1,5 +1,9 @@
 // In a file like __tests__/helpers/SimpleIndexedStore.ts
-import { BaseIndexedStore, IndexedStoreItemType, PrimitiveType } from '../indexed-store';
+import {
+  BaseIndexedStore,
+  IndexedStoreItemType,
+  PrimitiveType,
+} from '~/indexed-store/index.js'
 
 type TestItem = { id: string; name: string; age: number; };
 type KeyParts = ['id'];

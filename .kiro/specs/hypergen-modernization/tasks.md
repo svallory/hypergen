@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. CRITICAL: Resolve active git rebase conflicts
+- [x] 1. CRITICAL: Resolve active git rebase conflicts
   - Resolve merge conflicts in currently rebasing commit (f5d2725)
   - Complete the rebase process to integrate multiple-template-directories feature
   - Test that all existing functionality works after conflict resolution
@@ -15,7 +15,7 @@
 - [x] 1.2 Resolve conflicts in src/generators.ts (add/add conflict)
   - Determine which version of generators.ts to keep or merge both
   - Preserve functionality from both branches
-  - Test generator discovery and execution
+  - Test generator discovery and **execution**
   - _Requirements: 3.1, 3.4_
 
 - [x] 1.3 Resolve conflicts in src/help.ts
@@ -42,7 +42,7 @@
   - Add tests for multiple-template-directories functionality if missing
   - _Requirements: 3.1, 3.3_
 
-- [-] 1.7 Complete rebase and push to main
+- [x] 1.7 Complete rebase and push to main
   - Finish git rebase process
   - Push rebased commits to main branch
   - Verify linear git history
@@ -54,7 +54,7 @@
   - Remove yarn.lock file
   - _Requirements: 1.1, 1.4_
 
-- [ ] 2.1 Update package.json scripts to use Bun
+- [x] 2.1 Update package.json scripts to use Bun
   - Replace npm/yarn commands with bun equivalents in scripts section
   - Update build, test, and development scripts
   - Maintain npm publish for package distribution

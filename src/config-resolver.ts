@@ -1,19 +1,17 @@
-import { resolve as pathResolve } from 'path'
+import { resolve as pathResolve } from 'node:path'
 import fs from 'fs-extra'
 import type {
   ResolvedRunnerConfig,
   ResolvedTemplatePathConfig,
   RunnerConfig,
   TemplateConfigObj,
-} from './types'
-import { ConfigResolver } from './config'
-import process = require('process')
-import process = require('process')
-import process = require('process')
+} from './types.js'
+import { ConfigResolver } from './config.js'
+import process from 'node:process'
 
 const configResolver = new ConfigResolver('.hypergen.js', {
   exists: fs.exists,
-  load: async (f) => await import(f),
+  load: (f) => import(f),
   none: (_) => ({}),
 })
 
@@ -44,17 +42,16 @@ const normalizeTemplatesConfig = (
         }
       }
 
-      throw new Error(`Invalid configuration found in 'templates' option item ${
-        index + 1
-      }
+      throw new Error(`Invalid configuration found in 'templates' option item ${index + 1
+        }
     Each template configured in templates should either be a string with a filesystem path
     or an object with a 'path' string property and optionally a 'prefix'.
 
     The templates[${index}] (item ${index + 1}) is ${JSON.stringify(
-        templates[index],
-        null,
-        4,
-      )}
+          templates[index],
+          null,
+          4,
+        )}
       `)
     })
   }
@@ -188,9 +185,9 @@ const resolveTemplates = (
       throw new Error(`
         Invalid templatesOverride config in ${overridingConfig.source}.
           The following paths are missing:${missingPaths.map(
-            (p) => `
+        (p) => `
             - ${p.path}`,
-          )}
+      )}
         `)
     }
 
@@ -250,8 +247,8 @@ const resolveTemplates = (
         1. a .hypergen.js 'templatesOverride' config option (not present)
         2. HYPERGEN_TMPLS is not set
         3. The following paths from the 'templates' config option (all missing) ${missingPaths
-          .map((t) => `      - ${t.path}`)
-          .join('\n')}
+        .map((t) => `      - ${t.path}`)
+        .join('\n')}
         4. in the current folder (${cwd}) from a '_templates' folder
       `,
     )

@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
-import type { ActionResult, ResolvedRunnerConfig } from './types'
-import params from './params'
+import type { ActionResult, ResolvedRunnerConfig } from './types.js'
+import params from './params.js'
 
 class ShowHelpError extends Error {
   constructor(message: string) {
@@ -51,8 +51,8 @@ Options:
 
   // lazy loading these dependencies gives a better feel once
   // a user is exploring hygen (not specifying what to execute)
-  const execute = (await import('./execute')).default
-  const render = (await import('./render')).default
+  const execute = (await import('./execute.js')).default
+  const render = (await import('./render.js')).default
   return execute(await render(args, config), args, config)
 }
 

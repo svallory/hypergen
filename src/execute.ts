@@ -1,6 +1,6 @@
 import createDebug from 'debug'
-import resolve from './ops'
-import type { ActionResult, RenderedAction, RunnerConfig } from './types'
+import resolve from './ops/index.js'
+import type { ActionResult, RenderedAction, RunnerConfig } from './types.js'
 const debug = createDebug('hygen:execute')
 
 const execute = async (

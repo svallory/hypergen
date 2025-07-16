@@ -1,17 +1,24 @@
 {
-  "//extends": "pick from: stylomatic/{node-library|react-library|nextjs|base}.json",
-  "extends": "stylomatic/node-library.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["esnext"],
     "strict": false,
-    "isolatedModules": false
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "pretty": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "types": ["bun-types", "react"],
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "**/__tests__/",
-    "test/fixtures",
-    "src/**/*.spec.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.json", ".hypergen.js"],
+  "exclude": ["node_modules", "hygen.io"]
 }

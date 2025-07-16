@@ -1,11 +1,11 @@
-import path from 'path'
+import path from 'node:path'
 import fs from 'fs-extra'
 import ejs from 'ejs'
 import fm from 'front-matter'
 import walk from 'ignore-walk'
 import createDebug from 'debug'
-import type { RenderedAction, RunnerConfig } from './types'
-import context from './context'
+import type { RenderedAction, RunnerConfig } from './types.js'
+import context from './context.js'
 const debug = createDebug('hygen:render')
 
 // for some reason lodash/fp takes 90ms to load.
@@ -38,8 +38,11 @@ async function getFiles(dir) {
 const render = async (
   args: any,
   config: RunnerConfig,
-): Promise<RenderedAction[]> =>
-  getFiles(args.actionFolder)
+): Promise<RenderedAction[]> => {
+  if (!args.actionFolder) {
+    return []
+  }
+  return getFiles(args.actionFolder)
     .then((things) => things.sort((a, b) => a.localeCompare(b))) // TODO: add a test to verify this sort
     .then(filter((f) => !ignores.find((ig) => f.endsWith(ig)))) // TODO: add a
     // test for ignoring prompt.js and index.js
@@ -59,7 +62,7 @@ const render = async (
     .then(
       map(({ file, text }) => {
         debug('Pre-formatting file: %o', file)
-        return { file, ...fm(text, { allowUnsafe: true }) }
+        return { file, ...(fm as any)(text, { allowUnsafe: true }) }
       }),
     )
     .then(
@@ -85,5 +88,6 @@ const render = async (
         }
       }),
     )
+}
 
 export default render

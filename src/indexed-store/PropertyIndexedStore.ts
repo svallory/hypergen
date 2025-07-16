@@ -1,5 +1,5 @@
-import { joinParts } from './util';
-import { BaseIndexedStore } from './IndexedStore';
+import { joinParts } from './util.js';
+import { BaseIndexedStore } from './IndexedStore.js';
 
 
 export abstract class PropertyIndexedStore<ItemType extends object | Function, KeyParts extends Array<keyof ItemType>, ExtraIndices extends Array<keyof ItemType>>

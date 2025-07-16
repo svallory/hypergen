@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto"
+import { createHash } from 'node:crypto'
 
 export function hashKeyParts(...args: any[]): string {
   // Utilizing SHA-256 for hashing

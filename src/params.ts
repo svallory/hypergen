@@ -1,13 +1,13 @@
 import yargs from 'yargs-parser'
-import type { ParamsResult, ResolvedRunnerConfig } from './types'
+import type { ParamsResult, ResolvedRunnerConfig } from './types.js'
 
-import prompt from './prompt'
-import { loadGenerators } from './generators';
-import { ShowHelpError } from './engine'
-import { type ActionStore } from './TemplateStore'
-export const DEFAULT_ACTION = '_default'
+import prompt from './prompt.js'
+import { loadGenerators } from './generators.js'
+import { ShowHelpError } from './engine.js'
+import { type ActionStore } from './TemplateStore.js'
+import { DEFAULT_ACTION } from './constants.js'
 
-const resolvePositionalArgs = async (actions: ActionStore, args: string[]) => {
+const resolvePositionalArgs = async (actions: ActionStore, args: (string | number)[]) => {
   /*
   we want a to create flexible resolution and allow both:
 
@@ -26,15 +26,15 @@ const resolvePositionalArgs = async (actions: ActionStore, args: string[]) => {
   init MyName (default, name=MyName), default because 'repo' does not exist
   init (default, name=[empty]), default always!
   */
-  let [generator, action, name] = args
+  const [generator, action, name] = args.map(String)
 
   if (generator && action && actions.exists(generator, action)) {
     return [generator, action, name]
   }
 
   if (generator && actions.exists(generator, DEFAULT_ACTION)) {
-    action = DEFAULT_ACTION
-    ;[generator, name] = args
+    const [gen, act] = args.map(String)
+    return [gen, DEFAULT_ACTION, act]
   }
 
   return [generator, action, name]
@@ -48,9 +48,15 @@ const params = async (
   const { templates, conflictResolutionStrategy, createPrompter } =
     resolvedConfig
 
-  const { actions, generators } = loadGenerators(templates, conflictResolutionStrategy)
+  const { actions, generators } = loadGenerators(
+    templates,
+    conflictResolutionStrategy,
+  )
 
-  const [generator, action, name] = await resolvePositionalArgs(actions, argv._)
+  const [generator, action, name] = await resolvePositionalArgs(
+    actions,
+    argv._,
+  )
 
   if (!generator || !action) {
     return { generator, action, templates }
@@ -59,21 +65,23 @@ const params = async (
   const targetAction = actions.find(generator, action)
 
   if (!targetAction) {
-    const existingGenerators = generators.findByName(generator);
+    const existingGenerators = generators.findByName(generator)
     const existingActions = existingGenerators.reduce(
       (actionsArr: string[], curr) => {
-        actionsArr.push(...curr.actions.map(a => a.name))
+        actionsArr.push(...curr.actions.map((a) => a.name))
         return actionsArr
-      }, [] as string[])
+      },
+      [] as string[],
+    )
 
     throw new ShowHelpError(`
 The action "${action}" does not exist in the ${generator} generator.
 
 Existing actions:
-${ existingActions.map(a => `  - ${a}`).join('\n')}
+${existingActions.map((a) => `  - ${a}`).join('\n')}
 
 Generator paths:
-${ existingGenerators.map(g => `  - ${g.path}`).join('\n')}
+${existingGenerators.map((g) => `  - ${g.path}`).join('\n')}
 `)
   }
 

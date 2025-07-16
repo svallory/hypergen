@@ -1,5 +1,5 @@
-import { IndexedStoreItemType, PrimitiveType, ToTuple } from './types';
-import { isNotPrimitive } from './util';
+import { IndexedStoreItemType, PrimitiveType, ToTuple } from './types.js'
+import { isNotPrimitive } from './util.js'
 
 /**
  * BaseIndexedStore is an abstract base class for implementing indexed data stores.

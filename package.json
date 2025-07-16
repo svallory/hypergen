@@ -1,122 +1,111 @@
 {
-  "name": "hypergen",
-  "version": "7.0.0-rc.2",
-  "description": "The scalable code generator that saves you time.",
-  "keywords": [
-    "template",
-    "generator",
-    "hygen",
-    "boilerplate",
-    "redux",
-    "react"
-  ],
-  "author": {
-    "name": "Saulo Vallory",
-    "email": "saulo@toki.life",
-    "url": "https://saulo.engineer"
-  },
-  "contributors": [
-    {
-      "name": "Dotan J. Nahum (original author)",
-      "email": "dn@rng0.io",
-      "url": "https://medium.com/@jondot"
-    }
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/svallory/hypergen.git"
-  },
-  "main": "dist/index.js",
-  "bin": "dist/bin.js",
-  "scripts": {
-    "standalone": "rm -rf standalone; yarn build:lib && yarn pkg package.json --out-path standalone && node scripts/standalone.js",
-    "standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
-    "build:changelog": "conventional-changelog -i CHANGELOG.md -p angular > CHANGELOG.md",
-    "build:lib": "tsc",
-    "prebuild": "echo 'Building...'",
-    "build": "yarn build:lib && yarn build:changelog",
-    "postbuild": "echo 'Done building!'",
-    "prepack": " yarn build",
-    "test:win32": "yarn jest --runInBand --testPathIgnorePatterns '.*metaverse-conditional.*'",
-    "test": "yarn test:code && yarn test:require",
-    "test:code": "yarn jest --runInBand",
-    "test:require": "node dist/bin.timed.js; node dist/bin.timed.js; node dist/bin.timed.js init self; rm -rf _templates",
-    "watch": "yarn jest --watch",
-    "hygen": "ts-node src/bin.ts",
-    "hygen:build": "node dist/bin.js",
-    "hygen:timed": "node dist/bin.timed.js",
-    "docs:prepare": "cd hygen.io && yarn",
-    "docs:watch": "cd hygen.io && yarn start",
-    "docs:build": "cd hygen.io && yarn build",
-    "docs:publish": "cd hygen.io && yarn deploy"
-  },
-  "dependencies": {
-    "@types/node": "^17.0.45",
-    "chalk": "^4.1.2",
-    "change-case": "^3.1.0",
-    "debug": "^4.3.4",
-    "degit": "^2.8.4",
-    "ejs": "^3.1.9",
-    "enquirer": "^2.4.1",
-    "execa": "^5.1.1",
-    "front-matter": "^4.0.2",
-    "fs-extra": "^10.1.0",
-    "ignore-walk": "^4.0.1",
-    "inflection": "^1.13.4",
-    "ora": "^5.4.1",
-    "yargs-parser": "^21.1.1"
-  },
-  "devDependencies": {
-    "@types/jest": "^27.5.2",
-    "@types/node": "^17.0.45",
-    "conventional-changelog-cli": "^2.2.2",
-    "dir-compare": "^4.2.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "gh-pages": "^3.2.3",
-    "jest": "^27.5.1",
-    "nodemon": "^3.1.0",
-    "pkg": "^5.8.1",
-    "react": "17.0.2",
-    "stylomatic": "^0.3.2",
-    "time-require": "^0.1.2",
-    "ts-jest": "^27.1.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^4.9.5",
-    "zeroconf-typescript-eslint": "^2.4.0"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "**/test/**",
-      "**/docs/**"
-    ],
-    "delay": 500
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "src/__tests__/.*\\.spec\\.ts$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
-  },
-  "pkg": {
-    "scripts": "dist/**/*.js",
-    "assets": "src/**/*",
-    "outPath": "standalone",
-    "targets": [
-      "node17-macos",
-      "node17-linux",
-      "node17-win"
-    ]
-  },
-  "engines": {
-    "node": ">=14.18.0"
-  }
+	"name": "hypergen",
+	"version": "7.0.0-rc.2",
+	"description": "The scalable code generator that saves you time.",
+	"keywords": [
+		"template",
+		"generator",
+		"hygen",
+		"boilerplate",
+		"redux",
+		"react"
+	],
+	"author": {
+		"name": "Saulo Vallory",
+		"email": "saulo@toki.life",
+		"url": "https://saulo.engineer"
+	},
+	"contributors": [
+		{
+			"name": "Dotan J. Nahum (original author)",
+			"email": "dn@rng0.io",
+			"url": "https://medium.com/@jondot"
+		}
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/svallory/hypergen.git"
+	},
+	"main": "dist/index.js",
+	"bin": {
+		"hypergen": "dist/bin.js"
+	},
+	"type": "module",
+	"scripts": {
+		"standalone": "rm -rf standalone; bun run build:lib && bun pkg package.json --out-path standalone && bun scripts/standalone.js",
+		"standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
+		"build:changelog": "bunx conventional-changelog -i CHANGELOG.md -p angular > CHANGELOG.md",
+		"build:lib": "bun run tsc",
+		"prebuild": "echo 'Building...'",
+		"build": "bun run build:lib && bun run build:changelog",
+		"postbuild": "echo 'Done building!'",
+		"prepack": "bun run build",
+		"test:win32": "bun test --testPathIgnorePatterns '.*metaverse-conditional.*'",
+		"test": "bun test --coverage --exclude-v8-coverage=false --exclude=dist/**",
+		"test:code": "bun test",
+		"test:require": "time node -e 'require(\"./dist/hygen.js\")'",
+		"watch": "bun test --watch",
+		"hygen": "bun --bun src/bin.ts",
+		"hygen:build": "bun dist/bin.js",
+		"hygen:timed": "bun dist/bin.timed.js",
+		"docs:prepare": "cd hygen.io && bun install",
+		"docs:watch": "cd hygen.io && bun start",
+		"docs:build": "cd hygen.io && bun run build",
+		"docs:publish": "cd hygen.io && bun run deploy"
+	},
+	"dependencies": {
+		"@types/node": "^17.0.45",
+		"chalk": "^4.1.2",
+		"change-case": "^3.1.0",
+		"debug": "^4.3.4",
+		"degit": "^2.8.4",
+		"ejs": "^3.1.9",
+		"enquirer": "^2.4.1",
+		"execa": "^5.1.1",
+		"front-matter": "^4.0.2",
+		"fs-extra": "^10.1.0",
+		"ignore-walk": "^4.0.1",
+		"inflection": "^1.13.4",
+		"ora": "^5.4.1",
+		"yargs-parser": "^21.1.1"
+	},
+	"devDependencies": {
+		"@types/react": "latest",
+		"bun-types": "latest",
+		"conventional-changelog-cli": "^2.2.2",
+		"dir-compare": "^4.2.0",
+		"eslint-plugin-prettier": "^5.1.3",
+		"gh-pages": "^3.2.3",
+		"nodemon": "^3.1.0",
+		"pkg": "^5.8.1",
+		"react": "17.0.2",
+		"stylomatic": "^0.3.2",
+		"time-require": "^0.1.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.3",
+		"vitest": "^3.2.4",
+		"zeroconf-typescript-eslint": "^2.4.0"
+	},
+	"nodemonConfig": {
+		"ignore": ["**/test/**", "**/docs/**"],
+		"delay": 500
+	},
+	"pkg": {
+		"scripts": "dist/**/*.js",
+		"assets": "src/**/*",
+		"outPath": "standalone",
+		"targets": ["node17-macos", "node17-linux", "node17-win"]
+	},
+	"engines": {
+		"node": ">=14.18.0"
+	},
+	"overrides": {
+		"chalk": "4.1.2"
+	},
+	"test": {
+		"coverage": {
+			"exclude": ["dist/**"]
+		}
+	}
 }

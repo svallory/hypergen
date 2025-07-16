@@ -1,4 +1,4 @@
-import { EOL } from 'os'
+import { EOL } from 'node:os'
 const newline = (string) => {
   const newlines = string.match(/(?:\r?\n)/g) || []
 

@@ -1,77 +1,75 @@
-import { bold } from 'chalk'
-import type {
-  Logger,
-  ResolvedRunnerConfig,
-  ResolvedTemplatePathConfig,
-} from './types'
-import { DEFAULT_ACTION } from './params'
-import { loadGenerators } from './generators'
-import { ConflictResolutionStrategy } from './types'
+import chalk from 'chalk'
+import { loadGenerators } from './generators.js'
+import { HYPERGEN_VERSION, DEFAULT_ACTION } from './constants.js'
+import type { Logger, RunnerConfig } from './types.js'
+import { ConflictResolutionStrategy } from './types.js'
 
-const pkg = require('../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+const help = (config: RunnerConfig, logger: Logger) => {
+  const { generator } = (config as any).subcommand
+    ? (config as any).subcommand
+    : { generator: null }
 
-const VERSION = pkg.version
-
-let _availableActions: Record<string, string[]>
-
-const availableActions = (
-  templates: ResolvedTemplatePathConfig[],
-  conflictStrategy = ConflictResolutionStrategy.FAIL,
-): Record<string, string[]> => {
-  if (_availableActions) return _availableActions
-
-  const { generators } = loadGenerators(templates, conflictStrategy)
-
-  return generators.listAll().reduce((acc, generator) => {
-    acc[generator.name] = generator.actions.map((a) => a.name)
-    return acc
-  }, {})
-}
-
-const printHelp = (config: ResolvedRunnerConfig, logger: Logger) => {
-  logger.log(`HyperGen v${VERSION}`)
-  logger.log('\nAvailable actions:')
-
-  const actionsByGenerator = availableActions(
-    config.templates,
-    config.conflictResolutionStrategy,
+  const templates = (
+    Array.isArray(config.templates) ? config.templates : [config.templates]
+  ).map((t) =>
+    typeof t === 'string' ? { path: t, pathChecked: false } : { ...t, pathChecked: false },
   )
+  const { actions, generators } = loadGenerators(
+    templates,
+    config.conflictResolutionStrategy || ConflictResolutionStrategy.FAIL,
+  )
+  if (generator) {
+    const actionsByGenerator = actions.listAll().reduce((acc, action) => {
+      acc[action.generatorName] = acc[action.generatorName] || []
+      acc[action.generatorName].push(action.name)
+      return acc
+    }, {})
 
-  // todo: this needs to be refactored
-  // config-resolver is now throwing in certain cases
-  if (!Object.keys(actionsByGenerator).length) {
-    logger.log(`No generators or actions found.
-
-      This means I didn't find a _templates folder right here,
-      or anywhere up the folder tree starting here.
-
-      Here's how to start using Hyper Gen:
-
-      $ hypergen init self
-      $ hypergen with-prompt new --name my-generator
-
-      (edit your generator in _templates/my-generator)
-
-      $ hypergen my-generator
-
-      See https://hygen.io for more.
-
-      `)
-    return
-  }
-
-  for (const [generator, actions] of Object.entries(actionsByGenerator)) {
-    logger.log(
-      `${bold(generator)}: ${
-        actions.find((name) => name === DEFAULT_ACTION)
-          ? `${generator}${actions.length > 1 ? ',' : ''} `
+    for (const [generator, actions] of Object.entries(actionsByGenerator)) {
+      logger.log(
+        `${chalk.bold(generator)}: ${(actions as any[]).find((name) => name === DEFAULT_ACTION)
+          ? `${generator}${(actions as any[]).length > 1 ? ',' : ''} `
           : ''
-      }${actions
-        .filter((name) => name !== DEFAULT_ACTION)
-        .map((action) => `${generator} ${action}`)
-        .join(', ')}`,
-    )
+        }${(actions as any[])
+          .filter((name) => name !== DEFAULT_ACTION)
+          .join(', ')}`,
+      )
+    }
+    if (actionsByGenerator[generator]) {
+      const actions = actionsByGenerator[generator]
+      logger.log(
+        `${(actions as any[]).length > 0
+          ? `\nActions:\n${(actions as any[]).join(', ')}`
+          : chalk.bold('\nNo actions defined for this generator.')
+        }`,
+      )
+    } else {
+      logger.log(`\nCan't find generator '${generator}'`)
+    }
+  } else {
+    const allGenerators = generators.listAll()
+    logger.log(`Hypergen v${HYPERGEN_VERSION}`)
+    logger.log('Loaded templates: ')
+    for (const template of templates) {
+      logger.log(typeof template === 'string' ? template : template.path)
+    }
+
+    if (!allGenerators || allGenerators.length === 0) {
+      logger.log(
+        chalk.bold('\nNo generators or actions available at this path...'),
+      )
+    } else {
+      logger.log('\nAvailable generators:')
+      for (const g of allGenerators) {
+        logger.log(
+          `  ${chalk.bold(g.name)}:\n    ${g.actions.length > 0 ? g.actions.join(', ') : 'No actions defined.'
+          }`,
+        )
+      }
+
+      logger.log(chalk.bold('\nfor more details visit https://hypergen.io'))
+    }
   }
 }
 
-export { availableActions, printHelp, VERSION }
+export default help

@@ -1,5 +1,5 @@
-import { BaseIndexedStore } from './IndexedStore';
-import { hashKeyParts } from './util';
+import { BaseIndexedStore } from './IndexedStore.js'
+import { hashKeyParts } from './util.js'
 
 export class HashIndexedStore<
   ItemType extends object | Function,

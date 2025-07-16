@@ -1,7 +1,7 @@
-import path from 'path'
-import fs from 'fs'
-import type { Prompter } from './types'
-import helpers from './helpers'
+import path from 'node:path'
+import fs from 'node:fs'
+import type { Prompter } from './types.js'
+import helpers from './helpers.js'
 
 const hooksfiles = [
   'index.js',
@@ -33,7 +33,7 @@ const prompt = async <Q, T>(
 
   // Lazily support TS hook files
   if (isTypeScriptHook) {
-    require('ts-node/register/transpile-only')
+    (await import('ts-node/register/transpile-only'))
   }
   // shortcircuit without prompter
   let hooksModule = await import(hooksfile)

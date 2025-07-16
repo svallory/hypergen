@@ -1,9 +1,8 @@
-import type { RunnerConfig, RunnerResult } from './types'
-import resolve from './config-resolver'
-import Logger from './logger'
-import engine, { ShowHelpError } from './engine'
-
-import { VERSION, availableActions, printHelp } from './help'
+import type { RunnerConfig, RunnerResult } from './types.js'
+import resolve from './config-resolver.js'
+import Logger from './logger.js'
+import engine, { ShowHelpError } from './engine.js'
+import help from './help.js'
 
 const runner = async (
   argv: string[],
@@ -13,7 +12,7 @@ const runner = async (
   const { logger } = resolvedConfig
   try {
     const actions = await engine(argv, resolvedConfig)
-    console.debug("engine returned actions:", actions)
+    console.debug('engine returned actions:', actions)
     return { success: true, actions, time: 0 }
   } catch (err) {
     logger.log(err.toString() + '\n' + err.stack)
@@ -23,10 +22,10 @@ const runner = async (
       logger.log('-------------------')
     }
     if (err instanceof ShowHelpError) {
-      printHelp(resolvedConfig, logger)
+      help(resolvedConfig, logger)
     }
     return { success: false, actions: [], time: 0 }
   }
 }
 
-export { runner, engine, resolve, printHelp, availableActions, Logger, VERSION }
+export { runner, engine, resolve, help as printHelp, Logger }

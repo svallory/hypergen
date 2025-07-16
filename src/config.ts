@@ -1,5 +1,5 @@
-import * as nodePath from 'path'
-import type { ResolverIO } from './types'
+import * as nodePath from 'node:path'
+import type { ResolverIO } from './types.js'
 
 // inline fp methods due to perf
 const uniq = (arr) => arr.filter((elem, pos, a) => a.indexOf(elem) === pos)

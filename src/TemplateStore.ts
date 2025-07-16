@@ -1,11 +1,11 @@
-import { HashIndexedStore } from './indexed-store';
-import { PropertyIndexedStore } from './indexed-store/PropertyIndexedStore';
-import type { Action, Generator } from './types';
+import { HashIndexedStore } from './indexed-store/index.js'
+import { PropertyIndexedStore } from './indexed-store/PropertyIndexedStore.js'
+import type { Action, Generator } from './types.js'
 
 class IndexedFolderStore<
-    ItemType extends { name: string, path: string },
-    KeyParts extends (keyof ItemType)[]>
-    extends HashIndexedStore<ItemType, KeyParts, ['name', 'path']> {
+  ItemType extends { name: string, path: string },
+  KeyParts extends (keyof ItemType)[]>
+  extends HashIndexedStore<ItemType, KeyParts, ['name', 'path']> {
 
   constructor(keyParts: KeyParts) {
     super(keyParts, ['name', 'path'])

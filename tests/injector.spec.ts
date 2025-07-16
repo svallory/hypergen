@@ -1,4 +1,5 @@
-import injector from '../ops/injector'
+import { describe, it, expect } from 'bun:test'
+import injector from '~/ops/injector.js'
 
 const gemfile = `
     source 'http://rubygems.org'

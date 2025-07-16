@@ -1,7 +1,7 @@
-// @index('./*', f => `export * from '${f.path}'`)
-export * from './HashIndexedStore'
-export * from './IndexedStore'
-export * from './PropertyIndexedStore'
-export * from './types'
-export * from './util'
+// @index('./*', f => `export * from '${f.path}.js'`)
+export * from './HashIndexedStore.js'
+export * from './IndexedStore.js'
+export * from './PropertyIndexedStore.js'
+export * from './types.js'
+export * from './util.js'
 // @endindex

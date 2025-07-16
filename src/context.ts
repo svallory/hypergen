@@ -1,5 +1,5 @@
-import type { RunnerConfig } from './types'
-import helpers from './helpers'
+import type { RunnerConfig } from './types.js'
+import helpers from './helpers.js'
 
 const localsToCapitalize = ['name']
 const localsToPluralize = ['name']

@@ -1,10 +1,10 @@
-import { ActionResult } from '../types'
-import createResult from './result'
+import { ActionResult } from '../types.js'
+import createResult from './result.js'
 
-const notEmpty = x => x && x.length > 0
+const notEmpty = (x: any) => x && x.length > 0
 const echo = async (
-  { attributes: { echo }},
-  _args:any,
+  { attributes: { echo } },
+  _args: unknown,
   { logger },
 ): Promise<ActionResult> => {
   const result = createResult('shell', echo)

@@ -1,8 +1,8 @@
-import path from 'path'
+import path from 'node:path'
 import createDebug from 'debug'
 import degit from 'degit'
-import type { ActionResult } from '../types'
-import createResult from './result'
+import type { ActionResult } from '../types.js'
+import createResult from './result.js'
 const debug = createDebug('hygen:ops:setup')
 /*
 XXX:

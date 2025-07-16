@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import inflection from 'inflection'
 import changeCase from 'change-case'
 

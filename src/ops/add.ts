@@ -1,12 +1,12 @@
-import path from 'path'
+import path from 'node:path'
 import fs from 'fs-extra'
-import { red } from 'chalk'
-import type { ActionResult, RenderedAction, RunnerConfig } from '../types'
-import createResult from './result'
+import chalk from 'chalk'
+import type { ActionResult, RenderedAction, RunnerConfig } from '../types.js'
+import createResult from './result.js'
 
 const add = async (
   action: RenderedAction,
-  args: any,
+  args: Record<string, any>,
   { logger, cwd, createPrompter }: RunnerConfig,
 ): Promise<ActionResult> => {
   const {
@@ -17,10 +17,14 @@ const add = async (
   if (!to || inject) {
     return result('ignored')
   }
+  if (!to) {
+    return result('missing "to" attribute')
+  }
+
   const absTo = path.resolve(cwd, to)
   const shouldNotOverwrite =
     !force && unless_exists !== undefined && unless_exists === true
-  const fileExists = await fs.exists(absTo)
+  const fileExists = await fs.pathExists(absTo)
 
   if (shouldNotOverwrite && fileExists) {
     logger.warn(`     skipped: ${to}`)
@@ -33,7 +37,7 @@ const add = async (
           prefix: '',
           type: 'confirm',
           name: 'overwrite',
-          message: red(`     exists: ${to}. Overwrite? (y/N): `),
+          message: chalk.red(`     exists: ${to}. Overwrite? (y/N): `),
         })
         .then(({ overwrite }) => overwrite))
     ) {

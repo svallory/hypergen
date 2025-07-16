@@ -1,4 +1,5 @@
-import context from '../context'
+import { describe, it, expect } from 'bun:test'
+import context from '~/context.js'
 
 describe('context', () => {
   it('should populate with capitalized keys', () => {

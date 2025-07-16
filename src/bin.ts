@@ -1,8 +1,13 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { command } from 'execa'
+import Logger from './logger.js'
+import { runner } from './index.js'
+import Enquirer from 'enquirer'
 
-import path from 'path'
-import Logger from './logger'
-import { runner } from './index'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // todo: should we always include this?
 // It would mean poorer error reporting of bad config
@@ -14,7 +19,7 @@ runner(process.argv.slice(2), {
   debug: !!process.env.DEBUG,
   exec: (action, body) => {
     const opts = body && body.length > 0 ? { input: body } : {}
-    return require('execa').command(action, { ...opts, shell: true }) // eslint-disable-line @typescript-eslint/no-var-requires
+    return command(action, { ...opts, shell: true }) // eslint-disable-line @typescript-eslint/no-var-requires
   },
-  createPrompter: () => require('enquirer'),
+  createPrompter: () => new Enquirer(),
 }).then(({ success }) => process.exit(success ? 0 : 1))

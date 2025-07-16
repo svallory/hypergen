@@ -1,5 +1,5 @@
-import type { RenderedAction } from '../types'
-import newline from '../newline'
+import type { RenderedAction } from '../types.js'
+import newline from '../newline.js'
 
 const EOLRegex = /\r?\n/
 

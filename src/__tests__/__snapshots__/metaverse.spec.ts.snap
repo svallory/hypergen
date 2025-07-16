@@ -1,0 +1,481 @@
+// Bun Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`metaverse-conditional should run the metaverse tests: shell new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-defaults should run the metaverse tests: use-defaults 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-extensions should run the metaverse tests: hygen-js new 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: init self 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: mailer new foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: worker new foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: worker init 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: --name from-params mailer new 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: sample new --name message 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: setup-new-project new test1 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: inflection new --name person --plural people --singular person 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: inflection-in-params new --name apple 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 2`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: attrs-in-body new --name foo-bar 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: add-unless-exists new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: add-unless-exists new --name foo --overwrite 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: overwrite-yes new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: overwrite-no new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: conditional-rendering new --name foo --should-fire 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: conditional-rendering new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: existing-params new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: existing-params new-params-alias --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: index-js-existing-params new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: index-js-existing-params new-params-alias --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 3`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 4`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 5`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: positional-name new acmecorp 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse-templates should run the metaverse tests: [object Object] 6`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the conditional tests: shell new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the defaults tests: use-defaults 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the extensions tests: hygen-js new 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: init self 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: mailer new foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: worker new foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: worker init 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: --name from-params mailer new 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: sample new --name message 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: setup-new-project new test1 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: inflection new --name person --plural people --singular person 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: inflection-in-params new --name apple 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 2`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: attrs-in-body new --name foo-bar 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: add-unless-exists new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: add-unless-exists new --name foo --overwrite 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: overwrite-yes new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: overwrite-no new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: conditional-rendering new --name foo --should-fire 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: conditional-rendering new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: existing-params new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: existing-params new-params-alias --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: index-js-existing-params new --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: index-js-existing-params new-params-alias --name foo 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 3`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 4`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 5`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: positional-name new acmecorp 1`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;
+
+exports[`metaverse should run the templates tests: [object Object] 6`] = `
+{
+  "actions": [],
+  "success": false,
+  "time": 0,
+}
+`;

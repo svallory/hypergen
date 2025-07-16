@@ -1,12 +1,12 @@
-import { lstatSync, readdirSync } from 'fs'
-import { join as joinPath } from 'path'
+import { lstatSync, readdirSync } from 'node:fs'
+import { join as joinPath } from 'node:path'
 import type {
   Action,
   Generator,
   ResolvedTemplatePathConfig,
-} from './types'
-import { ConflictResolutionStrategy } from './types'
-import { ActionStore, GeneratorStore, TemplateStore } from './TemplateStore'
+} from './types.js'
+import { ConflictResolutionStrategy } from './types.js'
+import { ActionStore, GeneratorStore, TemplateStore } from './TemplateStore.js'
 
 const removeExtension = (file: string) => file.replace(/\.[cm]?[jt]s[x]?$/, '')
 
@@ -97,7 +97,7 @@ export function loadGenerators(
 ): {
   generators: GeneratorStore
   actions: ActionStore
-  } {
+} {
   // There may be many situations when we actually want to reload the generators,
   // here are 2 situations:
   //   - successive calls to the engine with different set of templates folders
