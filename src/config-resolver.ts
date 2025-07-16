@@ -7,6 +7,9 @@ import type {
   TemplateConfigObj,
 } from './types'
 import { ConfigResolver } from './config'
+import process = require('process')
+import process = require('process')
+import process = require('process')
 
 const configResolver = new ConfigResolver('.hypergen.js', {
   exists: fs.exists,
@@ -97,9 +100,9 @@ const resolveConfigSourcesTemplates = (
   hasValidPaths: boolean
   missingPaths: ResolvedTemplatePathConfig[]
 } => {
-  const seen: Map<string, { exists: boolean }> = new Map<
+  const seen: Map<string, ResolvedTemplatePathConfig> = new Map<
     string,
-    { exists: boolean }
+    ResolvedTemplatePathConfig
   >()
   let hasValidPaths = false
   const missingPaths: ResolvedTemplatePathConfig[] = []
@@ -116,10 +119,10 @@ const resolveConfigSourcesTemplates = (
       const resolvedPaths: ResolvedTemplatePathConfig[] = tplConfig
         .reverse()
         .map<ResolvedTemplatePathConfig>((tplConfig) => {
+          const existingPath = seen.get(tplConfig.path)
           const resolvedPath: ResolvedTemplatePathConfig = {
             ...tplConfig,
-            exists:
-              seen.has[tplConfig.path]?.exists || fs.existsSync(tplConfig.path),
+            exists: existingPath?.exists || fs.existsSync(tplConfig.path),
             overridden: seen.has(tplConfig.path),
             pathChecked: true,
           }
@@ -130,7 +133,7 @@ const resolveConfigSourcesTemplates = (
             missingPaths.push(resolvedPath)
           }
 
-          seen[tplConfig.path] = resolvedPath
+          seen.set(tplConfig.path, resolvedPath)
 
           return resolvedPath
         })
@@ -154,7 +157,7 @@ const resolveConfigSourcesTemplates = (
  * Resolves the `templates` config with the following precedence order:
  *
  * 1. Picking the last `templatesOverride` of {@link configs}
- * 2. Checking the HYGEN_TMPLS env variable
+ * 2. Checking the HYPERGEN_TMPLS env variable
  * 3. Merging the `templates` config option from all configs and deduping the paths
  *
  * @param cwd Current working directory
@@ -206,7 +209,7 @@ const resolveTemplates = (
 
     if (!fs.existsSync(resolvedPath)) {
       throw new Error(
-        `Invalid HYGEN_TMPLS value: could not find ${overridingConfig} (resolved to: ${resolvedPath})`,
+        `Invalid HYPERGEN_TMPLS value: could not find ${process.env.HYPERGEN_TMPLS} (resolved to: ${resolvedPath})`,
       )
     }
 
@@ -226,27 +229,26 @@ const resolveTemplates = (
     config: {
       templates: pathResolve(cwd, '_templates'),
     },
-    source: 'hygen default config',
+    source: 'hypergen default config',
   })
 
   const { resolvedConfigSources, hasValidPaths, missingPaths } =
     resolveConfigSourcesTemplates(cwd, configs)
 
-  // if (missingPaths.length) {
-  //   // todo: core team should decide if they want to show a warning
-  //   // saying that the paths in `missingPaths` are missing or not
-  //   console.log(`The following paths from your 'templates' config option are missing: ${missingPaths
-  //     .map((t) => `      - ${t.path}`)
-  //     .join('\n')},
-  //   }`)
-  // }
+  if (missingPaths.length) {
+    // todo: core team should decide if they want to show a warning
+    // saying that the paths in `missingPaths` are missing or not
+    console.warn(`The following paths from your 'templates' config option are missing: ${missingPaths
+      .map((t) => `      - ${t.path}`)
+      .join('\n')}`)
+  }
 
   if (!hasValidPaths) {
     throw new Error(
       `We tried and tried but could not find a templates folder. Here's where we've look:
 
         1. a .hypergen.js 'templatesOverride' config option (not present)
-        2. HYGEN_TMPLS is not set
+        2. HYPERGEN_TMPLS is not set
         3. The following paths from the 'templates' config option (all missing) ${missingPaths
           .map((t) => `      - ${t.path}`)
           .join('\n')}

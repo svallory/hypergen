@@ -74,7 +74,8 @@ node_modules
 .pnp.*
 .yarn-integrity
 yarn-error.log
-
 # Project
 dist/
 sandbox/
+standalone/
+.yarn

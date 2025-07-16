@@ -28,9 +28,7 @@
     "url": "git+https://github.com/svallory/hypergen.git"
   },
   "main": "dist/index.js",
-  "bin": {
-    "hypergen": "dist/bin.js"
-  },
+  "bin": "dist/bin.js",
   "scripts": {
     "standalone": "rm -rf standalone; yarn build:lib && yarn pkg package.json --out-path standalone && node scripts/standalone.js",
     "standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",

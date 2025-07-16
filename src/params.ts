@@ -1,5 +1,5 @@
 import yargs from 'yargs-parser'
-import type { ActionsMap, ParamsResult, ResolvedRunnerConfig } from './types'
+import type { ParamsResult, ResolvedRunnerConfig } from './types'
 
 import prompt from './prompt'
 import { loadGenerators } from './generators';
@@ -50,9 +50,6 @@ const params = async (
 
   const { actions, generators } = loadGenerators(templates, conflictResolutionStrategy)
 
-  // console.debug('generators', generators)
-  // console.debug(`actionsMap (items: ${actionsMap.size})`, actionsMap.entries())
-
   const [generator, action, name] = await resolvePositionalArgs(actions, argv._)
 
   if (!generator || !action) {
@@ -69,15 +66,14 @@ const params = async (
         return actionsArr
       }, [] as string[])
 
-    console.log(JSON.stringify(existingGenerators, null, 2))
     throw new ShowHelpError(`
 The action "${action}" does not exist in the ${generator} generator.
 
 Existing actions:
-${ existingActions.map(a => `  - ${a}`)}
+${ existingActions.map(a => `  - ${a}`).join('\n')}
 
 Generator paths:
-${ existingGenerators.map(g => `  - ${g.path}`)}
+${ existingGenerators.map(g => `  - ${g.path}`).join('\n')}
 `)
   }
 

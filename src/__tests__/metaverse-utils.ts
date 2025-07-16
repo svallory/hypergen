@@ -35,10 +35,6 @@ const createConfig = (metaDir) => ({
 const dir = (m) => path.join(__dirname, 'metaverse', m)
 
 const metaverse = (folder, cmds, promptResponse: any = null) => {
-  beforeEach(() => {
-    enquirer.prompt = failPrompt
-  })
-
   it(folder, async () => {
     const metaDir = dir(folder)
 

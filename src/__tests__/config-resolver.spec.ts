@@ -74,7 +74,7 @@ describe('resolve', () => {
     ).toEqual(fixture('/app/_templates'))
   })
 
-  it('take templates from HYGEN_TMPLS env when it exists', async () => {
+  it('take templates from HYPERGEN_TMPLS env when it exists', async () => {
     process.env.HYPERGEN_TMPLS = fixture('app-custom/other-templates')
     expect(
       (
