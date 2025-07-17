@@ -65,8 +65,10 @@
 		"execa": "^5.1.1",
 		"front-matter": "^4.0.2",
 		"fs-extra": "^10.1.0",
+		"glob": "^11.0.3",
 		"ignore-walk": "^4.0.1",
 		"inflection": "^1.13.4",
+		"liquidjs": "^10.21.1",
 		"ora": "^5.4.1",
 		"yargs-parser": "^21.1.1"
 	},

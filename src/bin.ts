@@ -21,5 +21,5 @@ runner(process.argv.slice(2), {
     const opts = body && body.length > 0 ? { input: body } : {}
     return command(action, { ...opts, shell: true }) // eslint-disable-line @typescript-eslint/no-var-requires
   },
-  createPrompter: () => new Enquirer(),
+  createPrompter: () => new Enquirer() as any,
 }).then(({ success }) => process.exit(success ? 0 : 1))
