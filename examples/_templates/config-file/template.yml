@@ -1,0 +1,62 @@
+name: config-file
+description: Generate configuration files for development tools
+version: 1.0.0
+author: Hypergen Team
+
+variables:
+  type:
+    type: enum
+    values: ["eslint", "prettier", "typescript", "jest", "webpack", "vite", "tailwind", "package"]
+    required: true
+    description: Type of configuration file to generate
+    
+  format:
+    type: enum
+    values: ["json", "js", "ts", "yaml"]
+    default: "json"
+    description: Configuration file format
+    
+  preset:
+    type: enum
+    values: ["basic", "react", "vue", "node", "library"]
+    default: "basic"
+    description: Configuration preset
+    
+  withComments:
+    type: boolean
+    default: true
+    description: Include explanatory comments
+    
+  directory:
+    type: string
+    default: "."
+    description: Output directory
+    
+  overwrite:
+    type: boolean
+    default: false
+    description: Overwrite existing files
+
+examples:
+  - title: "ESLint config for React"
+    description: "Generate ESLint configuration for React projects"
+    variables:
+      type: "eslint"
+      format: "js"
+      preset: "react"
+      withComments: true
+      
+  - title: "TypeScript config for Node.js"
+    description: "Generate TypeScript configuration for Node.js projects"
+    variables:
+      type: "typescript"
+      format: "json"
+      preset: "node"
+      withComments: true
+      
+  - title: "Complete development setup"
+    description: "Generate multiple config files for a complete setup"
+    variables:
+      type: "package"
+      preset: "react"
+      withComments: true

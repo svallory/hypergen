@@ -1,0 +1,54 @@
+name: react-component
+description: Generate React components with TypeScript and optional stories
+version: 1.0.0
+author: Hypergen Team
+
+variables:
+  name:
+    type: string
+    required: true
+    description: Component name (will be PascalCased)
+    pattern: "^[a-zA-Z][a-zA-Z0-9]*$"
+    
+  type:
+    type: enum
+    values: ["functional", "class"]
+    default: "functional"
+    description: Component type
+    
+  withStorybook:
+    type: boolean
+    default: false
+    description: Generate Storybook stories
+    
+  withTests:
+    type: boolean
+    default: true
+    description: Generate test files
+    
+  directory:
+    type: string
+    default: "src/components"
+    description: Output directory
+    
+  styling:
+    type: enum
+    values: ["css", "scss", "styled-components", "none"]
+    default: "css"
+    description: Styling approach
+
+examples:
+  - title: "Basic functional component"
+    description: "Create a simple functional component with tests"
+    variables:
+      name: "Button"
+      type: "functional"
+      withTests: true
+      
+  - title: "Class component with Storybook"
+    description: "Create a class component with Storybook stories"
+    variables:
+      name: "Modal"
+      type: "class"
+      withStorybook: true
+      styling: "styled-components"

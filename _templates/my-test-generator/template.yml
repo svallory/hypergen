@@ -1,0 +1,49 @@
+name: my-test-generator
+description: Test generator for React components
+version: 1.0.0
+author: Unknown
+category: custom
+tags: [custom, react]
+
+variables:
+  name:
+    type: string
+    required: true
+    description: my-test-generator name
+    pattern: "^[a-zA-Z][a-zA-Z0-9-_]*$"
+    
+  type:
+    type: enum
+    
+    default: "functional"
+    description: Component type
+    values: ["functional","class"]
+    
+  withProps:
+    type: boolean
+    
+    default: true
+    description: Include props interface
+    
+  withStorybook:
+    type: boolean
+    
+    default: false
+    description: Generate Storybook stories
+    
+  styling:
+    type: enum
+    
+    default: "css"
+    description: Styling approach
+    values: ["css","scss","styled-components"]
+
+examples:
+  - title: "Basic my-test-generator"
+    description: "Create a basic my-test-generator"
+    variables:
+      name: "example-my-test-generator"
+      type: "functional"
+      withProps: true
+      withStorybook: false
+      styling: "css"

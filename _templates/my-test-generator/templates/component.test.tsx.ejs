@@ -1,0 +1,18 @@
+---
+to: src/components/<%= name %>/<%= name %>.test.tsx
+---
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import <%= name %> from './<%= name %>';
+
+describe('<%= name %>', () => {
+  it('renders without crashing', () => {
+    render(<<%= name %> />);
+    expect(screen.getByText('<%= name %> Component')).toBeInTheDocument();
+  });
+
+  it('renders children when provided', () => {
+    render(<<%= name %>>Custom content</<%= name %>>);
+    expect(screen.getByText('Custom content')).toBeInTheDocument();
+  });
+});

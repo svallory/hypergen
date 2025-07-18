@@ -1,0 +1,74 @@
+name: test-suite
+description: Generate comprehensive test suites with various frameworks
+version: 1.0.0
+author: Hypergen Team
+
+variables:
+  framework:
+    type: enum
+    values: ["jest", "vitest", "cypress", "playwright", "mocha"]
+    required: true
+    description: Testing framework to use
+    
+  testType:
+    type: enum
+    values: ["unit", "integration", "e2e", "all"]
+    default: "unit"
+    description: Type of tests to generate
+    
+  targetFile:
+    type: string
+    description: Target file to test (optional)
+    
+  withCoverage:
+    type: boolean
+    default: true
+    description: Include coverage configuration
+    
+  withMocks:
+    type: boolean
+    default: true
+    description: Include mock examples
+    
+  withFixtures:
+    type: boolean
+    default: true
+    description: Generate test fixtures
+    
+  directory:
+    type: string
+    default: "tests"
+    description: Test directory
+    
+  language:
+    type: enum
+    values: ["javascript", "typescript"]
+    default: "typescript"
+    description: Language for test files
+
+examples:
+  - title: "Jest unit tests"
+    description: "Generate Jest unit tests with mocks and coverage"
+    variables:
+      framework: "jest"
+      testType: "unit"
+      withCoverage: true
+      withMocks: true
+      language: "typescript"
+      
+  - title: "Cypress E2E tests"
+    description: "Generate Cypress end-to-end tests"
+    variables:
+      framework: "cypress"
+      testType: "e2e"
+      withFixtures: true
+      language: "typescript"
+      
+  - title: "Complete test suite"
+    description: "Generate all types of tests with multiple frameworks"
+    variables:
+      framework: "jest"
+      testType: "all"
+      withCoverage: true
+      withMocks: true
+      withFixtures: true

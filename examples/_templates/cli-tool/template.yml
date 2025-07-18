@@ -1,0 +1,59 @@
+name: cli-tool
+description: Generate CLI tools with TypeScript and Commander.js
+version: 1.0.0
+author: Hypergen Team
+
+variables:
+  name:
+    type: string
+    required: true
+    description: CLI tool name (kebab-case recommended)
+    pattern: "^[a-z][a-z0-9-]*$"
+    
+  description:
+    type: string
+    required: true
+    description: CLI tool description
+    
+  commands:
+    type: array
+    default: ["init", "build", "deploy"]
+    description: Commands to generate
+    
+  withConfig:
+    type: boolean
+    default: true
+    description: Include configuration file support
+    
+  withTests:
+    type: boolean
+    default: true
+    description: Generate test files
+    
+  directory:
+    type: string
+    default: "src"
+    description: Output directory
+    
+  packageManager:
+    type: enum
+    values: ["npm", "yarn", "pnpm", "bun"]
+    default: "npm"
+    description: Package manager
+
+examples:
+  - title: "Development CLI tool"
+    description: "Create a development CLI with common commands"
+    variables:
+      name: "dev-cli"
+      description: "Development CLI tool"
+      commands: ["init", "build", "test", "deploy"]
+      withConfig: true
+      
+  - title: "Simple utility CLI"
+    description: "Create a simple utility CLI"
+    variables:
+      name: "file-utils"
+      description: "File utility CLI"
+      commands: ["convert", "compress", "validate"]
+      withConfig: false

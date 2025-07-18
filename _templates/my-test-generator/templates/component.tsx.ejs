@@ -1,0 +1,19 @@
+---
+to: src/components/<%= name %>/<%= name %>.tsx
+---
+import React from 'react';
+
+export interface <%= name %>Props {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+const <%= name %>: React.FC<<%= name %>Props> = ({ children, className }) => {
+  return (
+    <div className={`<%= name.toLowerCase() %>${className ? ` ${className}` : ''}`}>
+      {children || '<%= name %> Component'}
+    </div>
+  );
+};
+
+export default <%= name %>;

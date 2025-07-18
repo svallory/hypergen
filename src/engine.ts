@@ -1,6 +1,12 @@
-import fs from 'fs-extra'
+/**
+ * Hypergen V8 Engine
+ * 
+ * Clean V8-only implementation without legacy compatibility
+ */
+
 import type { ActionResult, ResolvedRunnerConfig } from './types.js'
-import params from './params.js'
+import { HypergenCLI } from './cli/index.js'
+import type { HypergenCliConfig } from './cli/index.js'
 
 class ShowHelpError extends Error {
   constructor(message: string) {
@@ -13,48 +19,71 @@ const engine = async (
   argv: string[],
   config: ResolvedRunnerConfig,
 ): Promise<ActionResult[]> => {
-  const { cwd, templates, logger } = config
-  const args = Object.assign(await params(config, argv), { cwd })
-  const { generator, action, actionFolder } = args
+  const { logger } = config
 
+  // Handle help flags
   if (['-h', '--help'].includes(argv[0])) {
-    logger.log(`
-Usage:
-  hygen [option] GENERATOR ACTION [--name NAME] [data-options]
+    const helpMessage = `
+🚀 Hypergen - The Modern Code Generator
 
-Options:
-  -h, --help # Show this message and quit
-  --dry      # Perform a dry run.  Files will be generated but not saved.`)
-    process.exit(0)
+USAGE:
+  hypergen <command> [options]
+
+COMMANDS:
+  action <name> [params...]        Execute an action
+  discover [sources...]            Discover generators
+  list [category]                  List available actions
+  info <action-name>               Show action details
+  url <subcommand> [args...]       URL template operations
+  system <subcommand> [args...]    System operations
+
+OPTIONS:
+  -h, --help                       Show this help message
+  --debug                          Enable debug output
+
+EXAMPLES:
+  hypergen discover                Discover all generators
+  hypergen list component          List component actions
+  hypergen action create-component --name=Button --type=tsx
+  hypergen url resolve github:user/repo/templates
+  hypergen system status           Show system status
+
+For more information, run: hypergen system help
+`
+    logger.log(helpMessage)
+    throw new ShowHelpError('Help requested')
   }
 
-  logger.log(args.dry ? '(dry mode)' : '')
-  if (!generator) {
-    throw new ShowHelpError('please specify a generator.')
+  // All commands go through Hypergen CLI
+  const cliConfig: HypergenCliConfig = {
+    ...config
   }
 
-  if (!action) {
-    throw new ShowHelpError(`please specify an action for ${generator}.`)
+  const cli = new HypergenCLI(cliConfig)
+  
+  try {
+    const result = await cli.execute(argv)
+    
+    if (result.success) {
+      // Log success message
+      if (result.message) {
+        logger.log(result.message)
+      }
+      
+      // Return empty actions array (V8 handles its own output)
+      return []
+    } else {
+      // Log error message and throw
+      if (result.message) {
+        logger.log(result.message)
+      }
+      
+      throw new Error(result.message || 'Command failed')
+    }
+  } catch (error: any) {
+    throw new Error(`Command failed: ${error.message}`)
   }
-
-  logger.log(`Loaded templates: ${templates.map((t) => `${t.path}/`, '')}`)
-  if (!(await fs.exists(actionFolder))) {
-    throw new ShowHelpError(`I can't find action '${action}' for generator '${generator}'.
-
-      You can try:
-      1. 'hygen init self' to initialize your project, and
-      2. 'hygen generator new --name ${generator}' to build the generator you wanted.
-
-      Check out the quickstart for more: https://hygen.io/docs/quick-start
-      `)
-  }
-
-  // lazy loading these dependencies gives a better feel once
-  // a user is exploring hygen (not specifying what to execute)
-  const execute = (await import('./execute.js')).default
-  const render = (await import('./render.js')).default
-  return execute(await render(args, config), args, config)
 }
 
-export { ShowHelpError }
 export default engine
+export { ShowHelpError }

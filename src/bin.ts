@@ -1,25 +1,54 @@
 #!/usr/bin/env bun
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { command } from 'execa'
-import Logger from './logger.js'
-import { runner } from './index.js'
-import Enquirer from 'enquirer'
+/**
+ * Hypergen CLI Entry Point
+ */
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import { HypergenCLI } from './cli/cli.js'
 
-// todo: should we always include this?
-// It would mean poorer error reporting of bad config
-const defaultTemplates = path.join(__dirname, '../src/templates')
-runner(process.argv.slice(2), {
-  templates: defaultTemplates,
-  cwd: process.cwd(),
-  logger: new Logger(console.log.bind(console)), // eslint-disable-line no-console
-  debug: !!process.env.DEBUG,
-  exec: (action, body) => {
-    const opts = body && body.length > 0 ? { input: body } : {}
-    return command(action, { ...opts, shell: true }) // eslint-disable-line @typescript-eslint/no-var-requires
-  },
-  createPrompter: () => new Enquirer() as any,
-}).then(({ success }) => process.exit(success ? 0 : 1))
+async function main() {
+  const args = process.argv.slice(2)
+  
+  // Parse global options
+  const config = {
+    cwd: process.cwd(),
+    debug: !!process.env.DEBUG || args.includes('--debug'),
+    verbose: !!process.env.VERBOSE || args.includes('--verbose'),
+    configPath: process.env.HYPERGEN_CONFIG
+  }
+  
+  // Remove global flags from args
+  const filteredArgs = args.filter(arg => 
+    !arg.startsWith('--debug') && 
+    !arg.startsWith('--verbose') && 
+    !arg.startsWith('--config')
+  )
+  
+  try {
+    const cli = new HypergenCLI(config)
+    await cli.initialize()
+    const result = await cli.execute(filteredArgs)
+    
+    if (result.success) {
+      if (result.message) {
+        console.log(result.message)
+      }
+      process.exit(0)
+    } else {
+      if (result.message) {
+        console.error(result.message)
+      }
+      process.exit(1)
+    }
+  } catch (error: any) {
+    console.error('Error:', error.message)
+    if (config.debug) {
+      console.error(error.stack)
+    }
+    process.exit(1)
+  }
+}
+
+main().catch(error => {
+  console.error('Fatal error:', error.message)
+  process.exit(1)
+})

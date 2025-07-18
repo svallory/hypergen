@@ -1,0 +1,60 @@
+name: api-endpoint
+description: Generate REST API endpoints with TypeScript
+version: 1.0.0
+author: Hypergen Team
+
+variables:
+  name:
+    type: string
+    required: true
+    description: Resource name (e.g., 'user', 'product')
+    pattern: "^[a-zA-Z][a-zA-Z0-9]*$"
+    
+  methods:
+    type: array
+    default: ["GET", "POST", "PUT", "DELETE"]
+    description: HTTP methods to generate
+    
+  withAuth:
+    type: boolean
+    default: true
+    description: Include authentication middleware
+    
+  withValidation:
+    type: boolean
+    default: true
+    description: Include input validation
+    
+  framework:
+    type: enum
+    values: ["express", "fastify", "koa"]
+    default: "express"
+    description: Node.js framework
+    
+  database:
+    type: enum
+    values: ["mongodb", "postgresql", "mysql", "none"]
+    default: "mongodb"
+    description: Database type
+    
+  directory:
+    type: string
+    default: "src/routes"
+    description: Output directory
+
+examples:
+  - title: "User management endpoints"
+    description: "Full CRUD for user management"
+    variables:
+      name: "user"
+      methods: ["GET", "POST", "PUT", "DELETE"]
+      withAuth: true
+      withValidation: true
+      
+  - title: "Simple read-only API"
+    description: "Read-only endpoints without auth"
+    variables:
+      name: "product"
+      methods: ["GET"]
+      withAuth: false
+      withValidation: false
