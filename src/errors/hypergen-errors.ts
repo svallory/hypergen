@@ -16,6 +16,10 @@ export enum ErrorCode {
   TEMPLATE_INVALID_SYNTAX = 'TEMPLATE_INVALID_SYNTAX',
   TEMPLATE_MISSING_VARIABLES = 'TEMPLATE_MISSING_VARIABLES',
   TEMPLATE_INVALID_FRONTMATTER = 'TEMPLATE_INVALID_FRONTMATTER',
+  TEMPLATE_PARSING_ERROR = 'TEMPLATE_PARSING_ERROR',
+  TEMPLATE_EXECUTION_ERROR = 'TEMPLATE_EXECUTION_ERROR',
+  TEMPLATE_COMPOSITION_ERROR = 'TEMPLATE_COMPOSITION_ERROR',
+  TEMPLATE_RESOLUTION_ERROR = 'TEMPLATE_RESOLUTION_ERROR',
   
   // Action errors
   ACTION_NOT_FOUND = 'ACTION_NOT_FOUND',
@@ -41,6 +45,9 @@ export enum ErrorCode {
   URL_INVALID_FORMAT = 'URL_INVALID_FORMAT',
   URL_RESOLUTION_FAILED = 'URL_RESOLUTION_FAILED',
   URL_FETCH_FAILED = 'URL_FETCH_FAILED',
+  
+  // Dependency resolution errors
+  DEPENDENCY_RESOLUTION_ERROR = 'DEPENDENCY_RESOLUTION_ERROR',
   
   // Network errors
   NETWORK_CONNECTION_FAILED = 'NETWORK_CONNECTION_FAILED',
@@ -70,6 +77,24 @@ export interface ErrorContext {
   value?: any
   expected?: string
   received?: string
+  // Template-related context
+  templatePath?: string
+  template?: string
+  extends?: string
+  variable?: string
+  url?: string
+  version?: string
+  // Dependency-related context
+  dependency?: string
+  type?: string
+  path?: string
+  include?: string
+  base?: string
+  // Lifecycle-related context
+  hook?: string
+  phase?: string
+  error?: string
+  errors?: string[]
 }
 
 export class HypergenError extends Error {
@@ -107,6 +132,10 @@ export class ErrorHandler {
     [ErrorCode.TEMPLATE_INVALID_SYNTAX]: 'Template has invalid syntax',
     [ErrorCode.TEMPLATE_MISSING_VARIABLES]: 'Template is missing required variables',
     [ErrorCode.TEMPLATE_INVALID_FRONTMATTER]: 'Template has invalid frontmatter',
+    [ErrorCode.TEMPLATE_PARSING_ERROR]: 'Template parsing failed',
+    [ErrorCode.TEMPLATE_EXECUTION_ERROR]: 'Template execution failed',
+    [ErrorCode.TEMPLATE_COMPOSITION_ERROR]: 'Template composition failed',
+    [ErrorCode.TEMPLATE_RESOLUTION_ERROR]: 'Template resolution failed',
     
     [ErrorCode.ACTION_NOT_FOUND]: 'Action not found',
     [ErrorCode.ACTION_EXECUTION_FAILED]: 'Action execution failed',
@@ -128,6 +157,8 @@ export class ErrorHandler {
     [ErrorCode.URL_INVALID_FORMAT]: 'URL has invalid format',
     [ErrorCode.URL_RESOLUTION_FAILED]: 'URL resolution failed',
     [ErrorCode.URL_FETCH_FAILED]: 'Failed to fetch URL',
+    
+    [ErrorCode.DEPENDENCY_RESOLUTION_ERROR]: 'Dependency resolution failed',
     
     [ErrorCode.NETWORK_CONNECTION_FAILED]: 'Network connection failed',
     [ErrorCode.NETWORK_TIMEOUT]: 'Network request timed out',
@@ -397,6 +428,41 @@ export class ErrorHandler {
         title: 'List available templates',
         description: 'See all available templates',
         command: 'hypergen template list'
+      }
+    ],
+
+    [ErrorCode.TEMPLATE_PARSING_ERROR]: [
+      {
+        title: 'Check template syntax',
+        description: 'Verify the template.yml file has valid YAML syntax'
+      }
+    ],
+
+    [ErrorCode.TEMPLATE_EXECUTION_ERROR]: [
+      {
+        title: 'Check template variables',
+        description: 'Verify all required variables are provided'
+      }
+    ],
+
+    [ErrorCode.TEMPLATE_COMPOSITION_ERROR]: [
+      {
+        title: 'Check template inheritance',
+        description: 'Verify parent templates exist and are accessible'
+      }
+    ],
+
+    [ErrorCode.TEMPLATE_RESOLUTION_ERROR]: [
+      {
+        title: 'Check template URL',
+        description: 'Verify the template URL is accessible'
+      }
+    ],
+
+    [ErrorCode.DEPENDENCY_RESOLUTION_ERROR]: [
+      {
+        title: 'Check dependency configuration',
+        description: 'Verify dependency names and versions are correct'
       }
     ],
     

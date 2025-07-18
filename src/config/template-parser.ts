@@ -30,6 +30,23 @@ export interface TemplateExample {
   variables: Record<string, any>
 }
 
+export interface TemplateInclude {
+  url: string
+  version?: string
+  variables?: Record<string, any> // Variable overrides
+  condition?: string // JavaScript expression for conditional inclusion
+  strategy?: 'merge' | 'replace' | 'extend' // Conflict resolution strategy
+}
+
+export interface TemplateDependency {
+  name: string
+  version?: string
+  type?: 'npm' | 'github' | 'local' | 'http'
+  url?: string
+  optional?: boolean
+  dev?: boolean
+}
+
 export interface TemplateConfig {
   name: string
   description?: string
@@ -39,8 +56,26 @@ export interface TemplateConfig {
   tags?: string[]
   variables: Record<string, TemplateVariable>
   examples?: TemplateExample[]
-  dependencies?: string[]
+  dependencies?: string[] | TemplateDependency[] // Support both string[] and full dependency objects
   outputs?: string[]
+  // Advanced composition features
+  extends?: string // Template inheritance
+  includes?: TemplateInclude[] // Template composition
+  conflicts?: {
+    strategy: 'merge' | 'replace' | 'extend' | 'error'
+    rules?: Record<string, 'merge' | 'replace' | 'extend' | 'error'>
+  }
+  // Versioning and compatibility
+  engines?: {
+    hypergen?: string
+    node?: string
+  }
+  // Lifecycle hooks
+  hooks?: {
+    pre?: string[]
+    post?: string[]
+    error?: string[]
+  }
 }
 
 export interface ParsedTemplate {
@@ -193,9 +228,9 @@ export class TemplateParser {
 
     if (parsed.dependencies) {
       if (Array.isArray(parsed.dependencies)) {
-        config.dependencies = parsed.dependencies.filter(dep => typeof dep === 'string')
+        config.dependencies = this.validateDependencies(parsed.dependencies, warnings)
       } else {
-        warnings.push('Dependencies should be an array of strings')
+        warnings.push('Dependencies should be an array')
       }
     }
 
@@ -205,6 +240,16 @@ export class TemplateParser {
       } else {
         warnings.push('Outputs should be an array of strings')
       }
+    }
+
+    // Validate engines
+    if (parsed.engines) {
+      config.engines = this.validateEngines(parsed.engines, warnings)
+    }
+
+    // Validate hooks
+    if (parsed.hooks) {
+      config.hooks = this.validateHooks(parsed.hooks, warnings)
     }
 
     return config
@@ -472,5 +517,166 @@ export class TemplateParser {
       return value
     }
     return variable.default
+  }
+
+  /**
+   * Validate dependencies array (supports both string[] and TemplateDependency[])
+   */
+  private static validateDependencies(dependencies: any[], warnings: string[]): string[] | TemplateDependency[] {
+    const result: TemplateDependency[] = []
+    
+    for (const [index, dep] of dependencies.entries()) {
+      if (typeof dep === 'string') {
+        // Convert string to TemplateDependency
+        result.push({ name: dep, type: 'npm' })
+      } else if (typeof dep === 'object' && dep !== null) {
+        // Validate TemplateDependency object
+        const dependency = this.validateDependency(dep, index, warnings)
+        if (dependency) {
+          result.push(dependency)
+        }
+      } else {
+        warnings.push(`Dependency ${index + 1} must be a string or object`)
+      }
+    }
+    
+    return result
+  }
+
+  /**
+   * Validate individual dependency object
+   */
+  private static validateDependency(dep: any, index: number, warnings: string[]): TemplateDependency | null {
+    if (!dep.name || typeof dep.name !== 'string') {
+      warnings.push(`Dependency ${index + 1} must have a name`)
+      return null
+    }
+
+    const dependency: TemplateDependency = {
+      name: dep.name
+    }
+
+    if (dep.version && typeof dep.version === 'string') {
+      dependency.version = dep.version
+    }
+
+    if (dep.type && ['npm', 'github', 'local', 'http'].includes(dep.type)) {
+      dependency.type = dep.type
+    }
+
+    if (dep.url && typeof dep.url === 'string') {
+      dependency.url = dep.url
+    }
+
+    if (dep.optional !== undefined && typeof dep.optional === 'boolean') {
+      dependency.optional = dep.optional
+    }
+
+    if (dep.dev !== undefined && typeof dep.dev === 'boolean') {
+      dependency.dev = dep.dev
+    }
+
+    return dependency
+  }
+
+  /**
+   * Validate engines configuration
+   */
+  private static validateEngines(engines: any, warnings: string[]): Record<string, string> {
+    const result: Record<string, string> = {}
+
+    if (typeof engines !== 'object' || engines === null) {
+      warnings.push('Engines should be an object')
+      return result
+    }
+
+    if (engines.hypergen && typeof engines.hypergen === 'string') {
+      result.hypergen = engines.hypergen
+    }
+
+    if (engines.node && typeof engines.node === 'string') {
+      result.node = engines.node
+    }
+
+    return result
+  }
+
+  /**
+   * Validate hooks configuration
+   */
+  private static validateHooks(hooks: any, warnings: string[]): { pre?: string[]; post?: string[]; error?: string[] } {
+    const result: { pre?: string[]; post?: string[]; error?: string[] } = {}
+
+    if (typeof hooks !== 'object' || hooks === null) {
+      warnings.push('Hooks should be an object')
+      return result
+    }
+
+    if (hooks.pre) {
+      if (Array.isArray(hooks.pre)) {
+        result.pre = hooks.pre.filter(hook => typeof hook === 'string')
+        if (result.pre.length !== hooks.pre.length) {
+          warnings.push('Some pre hooks were ignored (must be strings)')
+        }
+      } else {
+        warnings.push('Pre hooks should be an array of strings')
+      }
+    }
+
+    if (hooks.post) {
+      if (Array.isArray(hooks.post)) {
+        result.post = hooks.post.filter(hook => typeof hook === 'string')
+        if (result.post.length !== hooks.post.length) {
+          warnings.push('Some post hooks were ignored (must be strings)')
+        }
+      } else {
+        warnings.push('Post hooks should be an array of strings')
+      }
+    }
+
+    if (hooks.error) {
+      if (Array.isArray(hooks.error)) {
+        result.error = hooks.error.filter(hook => typeof hook === 'string')
+        if (result.error.length !== hooks.error.length) {
+          warnings.push('Some error hooks were ignored (must be strings)')
+        }
+      } else {
+        warnings.push('Error hooks should be an array of strings')
+      }
+    }
+
+    return result
+  }
+
+  /**
+   * Check if a template version is compatible with current engine
+   */
+  static isVersionCompatible(templateEngines?: { hypergen?: string; node?: string }): boolean {
+    if (!templateEngines) {
+      return true // No specific requirements
+    }
+
+    // For now, return true - in a real implementation, this would check:
+    // - Current Hypergen version against templateEngines.hypergen
+    // - Current Node.js version against templateEngines.node
+    return true
+  }
+
+  /**
+   * Compare two semantic versions
+   */
+  static compareVersions(version1: string, version2: string): number {
+    const v1Parts = version1.split('.').map(Number)
+    const v2Parts = version2.split('.').map(Number)
+    
+    for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+      const v1Part = v1Parts[i] || 0
+      const v2Part = v2Parts[i] || 0
+      
+      if (v1Part > v2Part) return 1
+      if (v1Part < v2Part) return -1
+    }
+    
+    return 0
   }
 }

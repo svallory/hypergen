@@ -33,13 +33,13 @@ export class GeneratorScaffolding {
       const filesCreated: string[] = []
 
       // Ensure generator directory exists
-      await this.utils.ensureDir(generatorDir)
+      this.utils.createDirectory(generatorDir)
 
       // Create actions.ts file if action type
       if (options.type === 'action' || options.type === 'both') {
         const actionsPath = path.join(generatorDir, 'actions.ts')
         const actionsContent = this.generateActionsFile(options)
-        await this.utils.writeFile(actionsPath, actionsContent)
+        this.utils.writeFile(actionsPath, actionsContent)
         filesCreated.push(actionsPath)
       }
 
@@ -47,7 +47,7 @@ export class GeneratorScaffolding {
       if (options.type === 'template' || options.type === 'both') {
         const templatePath = path.join(generatorDir, 'template.yml')
         const templateContent = this.generateTemplateFile(options)
-        await this.utils.writeFile(templatePath, templateContent)
+        this.utils.writeFile(templatePath, templateContent)
         filesCreated.push(templatePath)
       }
 
@@ -56,8 +56,8 @@ export class GeneratorScaffolding {
         const exampleFiles = this.generateExampleTemplates(options)
         for (const [filePath, content] of Object.entries(exampleFiles)) {
           const fullPath = path.join(generatorDir, filePath)
-          await this.utils.ensureDir(path.dirname(fullPath))
-          await this.utils.writeFile(fullPath, content)
+          this.utils.createDirectory(path.dirname(fullPath))
+          this.utils.writeFile(fullPath, content)
           filesCreated.push(fullPath)
         }
       }
@@ -66,14 +66,14 @@ export class GeneratorScaffolding {
       if (options.withTests) {
         const testPath = path.join(generatorDir, `${options.name}.test.ts`)
         const testContent = this.generateTestFile(options)
-        await this.utils.writeFile(testPath, testContent)
+        this.utils.writeFile(testPath, testContent)
         filesCreated.push(testPath)
       }
 
       // Create README
       const readmePath = path.join(generatorDir, 'README.md')
       const readmeContent = this.generateReadmeFile(options)
-      await this.utils.writeFile(readmePath, readmeContent)
+      this.utils.writeFile(readmePath, readmeContent)
       filesCreated.push(readmePath)
 
       return {
@@ -99,7 +99,7 @@ export class GeneratorScaffolding {
       const filesCreated: string[] = []
 
       // Ensure workspace directory exists
-      await this.utils.ensureDir(workspaceDir)
+      this.utils.createDirectory(workspaceDir)
 
       // Create workspace configuration
       const configPath = path.join(workspaceDir, 'hypergen.config.js')
@@ -110,7 +110,7 @@ export class GeneratorScaffolding {
       // Create workspace README
       const readmePath = path.join(workspaceDir, 'README.md')
       const readmeContent = this.generateWorkspaceReadme()
-      await this.utils.writeFile(readmePath, readmeContent)
+      this.utils.writeFile(readmePath, readmeContent)
       filesCreated.push(readmePath)
 
       // Create example generators if requested

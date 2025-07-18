@@ -15,40 +15,41 @@ const debug = createDebug('hypergen:v8:action:utils')
 
 export class DefaultActionUtils implements ActionUtils {
   
-  async readFile(filePath: string): Promise<string> {
+  fileExists(filePath: string): boolean {
+    debug('Checking file exists: %s', filePath)
+    return fs.existsSync(filePath)
+  }
+
+  readFile(filePath: string): string {
     debug('Reading file: %s', filePath)
-    return await fs.readFile(filePath, 'utf-8')
+    return fs.readFileSync(filePath, 'utf-8')
   }
 
-  async writeFile(filePath: string, content: string): Promise<void> {
+  writeFile(filePath: string, content: string): void {
     debug('Writing file: %s', filePath)
-    await fs.ensureDir(path.dirname(filePath))
-    await fs.writeFile(filePath, content, 'utf-8')
+    fs.ensureDirSync(path.dirname(filePath))
+    fs.writeFileSync(filePath, content, 'utf-8')
   }
 
-  async deleteFile(filePath: string): Promise<void> {
-    debug('Deleting file: %s', filePath)
-    await fs.remove(filePath)
+  createDirectory(dirPath: string): void {
+    debug('Creating directory: %s', dirPath)
+    fs.ensureDirSync(dirPath)
   }
 
-  async ensureDir(dirPath: string): Promise<void> {
-    debug('Ensuring directory: %s', dirPath)
-    await fs.ensureDir(dirPath)
-  }
-
-  async copyFile(src: string, dest: string): Promise<void> {
+  copyFile(src: string, dest: string): void {
     debug('Copying file: %s -> %s', src, dest)
-    await fs.ensureDir(path.dirname(dest))
-    await fs.copy(src, dest)
+    fs.ensureDirSync(path.dirname(dest))
+    fs.copySync(src, dest)
   }
 
-  async pathExists(checkPath: string): Promise<boolean> {
-    return await fs.pathExists(checkPath)
+  deleteFile(filePath: string): void {
+    debug('Deleting file: %s', filePath)
+    fs.removeSync(filePath)
   }
 
-  async glob(pattern: string, options: { cwd?: string } = {}): Promise<string[]> {
+  globFiles(pattern: string, options: { cwd?: string } = {}): string[] {
     debug('Globbing pattern: %s (cwd: %s)', pattern, options.cwd || process.cwd())
-    return await glob(pattern, {
+    return glob.sync(pattern, {
       cwd: options.cwd || process.cwd(),
       absolute: false
     })
@@ -133,10 +134,6 @@ export class DefaultActionUtils implements ActionUtils {
 
 export class ConsoleActionLogger implements ActionLogger {
   
-  success(message: string): void {
-    console.log(`✅ ${message}`)
-  }
-
   info(message: string): void {
     console.log(`ℹ️  ${message}`)
   }
@@ -148,16 +145,20 @@ export class ConsoleActionLogger implements ActionLogger {
   error(message: string): void {
     console.error(`❌ ${message}`)
   }
+
+  debug(message: string): void {
+    console.log(`🐛 ${message}`)
+  }
+
+  trace(message: string): void {
+    console.log(`🔍 ${message}`)
+  }
 }
 
 /**
  * Silent logger for testing or when output should be suppressed
  */
 export class SilentActionLogger implements ActionLogger {
-  success(message: string): void {
-    // Silent
-  }
-
   info(message: string): void {
     // Silent
   }
@@ -167,6 +168,14 @@ export class SilentActionLogger implements ActionLogger {
   }
 
   error(message: string): void {
+    // Silent
+  }
+
+  debug(message: string): void {
+    // Silent
+  }
+
+  trace(message: string): void {
     // Silent
   }
 }

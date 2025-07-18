@@ -47,6 +47,18 @@ export interface ActionContext {
   utils: ActionUtils
   dryRun?: boolean // if true, don't actually write files
   force?: boolean // if true, overwrite existing files
+  communication?: ActionCommunication // cross-action communication
+}
+
+// Cross-action communication interface
+export interface ActionCommunication {
+  actionId: string
+  manager: any // ActionCommunicationManager
+  sendMessage: (type: string, payload: any, target?: string) => void
+  getSharedData: (key: string) => any
+  setSharedData: (key: string, value: any) => void
+  waitForAction: (actionId: string, timeout?: number) => Promise<any>
+  subscribeToMessages: (messageType: string, handler: (message: any) => void) => () => void
 }
 
 // Action execution result
@@ -57,6 +69,7 @@ export interface ActionResult {
   filesModified?: string[]
   filesDeleted?: string[]
   data?: any
+  metadata?: any
 }
 
 // Action function signature
@@ -80,23 +93,22 @@ export interface ActionExample {
 
 // Logging interface
 export interface ActionLogger {
-  success(message: string): void
   info(message: string): void
   warn(message: string): void
   error(message: string): void
+  debug(message: string): void
+  trace(message: string): void
 }
 
 // Utilities interface for action implementations
 export interface ActionUtils {
-  readFile(path: string): Promise<string>
-  writeFile(path: string, content: string): Promise<void>
-  deleteFile(path: string): Promise<void>
-  ensureDir(path: string): Promise<void>
-  copyFile(src: string, dest: string): Promise<void>
-  pathExists(path: string): Promise<boolean>
-  glob(pattern: string, options?: { cwd?: string }): Promise<string[]>
-  installPackages(packages: string[], options?: { dev?: boolean }): Promise<void>
-  runCommand(command: string, options?: { cwd?: string }): Promise<string>
+  fileExists(path: string): boolean
+  readFile(path: string): string
+  writeFile(path: string, content: string): void
+  createDirectory(path: string): void
+  copyFile(src: string, dest: string): void
+  deleteFile(path: string): void
+  globFiles(pattern: string, options?: { cwd?: string }): string[]
 }
 
 // Error types
