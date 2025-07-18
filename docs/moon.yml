@@ -1,0 +1,40 @@
+# stack
+#   The technology stack this project belongs to, primarily for categorization. Supports the following values:
+#
+#   - frontend - Client-side user interfaces, etc.
+#   - backend - Server-side APIs, database layers, etc.
+#   - infrastructure - Cloud/server infrastructure, Docker, etc.
+#   - systems - Low-level systems programming.
+#   - unknown (default) - When not configured.
+stack: frontend
+
+# type
+#   The type of project. Supports the following values:
+#
+#   - application - An application of any kind.
+#   - automation - An automated testing suite, like E2E, integration, or visual tests. v1.16.0
+#   - configuration - Configuration files or infrastructure. v1.22.0
+#   - library - A self-contained, shareable, and publishable set of code.
+#   - scaffolding - Templates or generators for scaffolding. v1.22.0
+#   - tool - An internal tool, one-off script, etc.
+#   - unknown (default) - When not configured.
+type: application
+
+language: typescript
+platform: bun
+
+tags:
+  - astro
+  - bun
+  - typescript
+
+# Disable project references
+toolchain:
+  typescript:
+    syncProjectReferences: false
+
+tasks:
+  lint:
+    args:
+      - '--ext'
+      - '.ts,.tsx,.astro'

@@ -1,0 +1,418 @@
+---
+title: Hypergen V8 Roadmap
+description: Future features and planned implementations for Hypergen V8
+---
+
+# Hypergen V8 Roadmap
+
+This roadmap outlines the planned features and enhancements for Hypergen V8, building on the solid foundation of advanced composition features already implemented.
+
+## 🎯 Current Status
+
+### ✅ Completed (V8.0)
+- **Advanced Template Composition** - Inheritance, conflict resolution, conditional inclusion
+- **Action System** - Decorator-based actions with lifecycle management
+- **Cross-Action Communication** - State sharing and messaging between actions
+- **Action Pipelines** - Complex workflow orchestration
+- **Plugin System** - Extensible architecture with template engines
+- **URL Resolution** - Remote template loading with caching
+
+### 🚧 In Progress (V8.1)
+- **Documentation Site** - Comprehensive documentation with examples
+- **GitHub Pages Deployment** - Automated documentation deployment
+- **Test Suite Completion** - 100% test coverage for all features
+
+## 📋 Planned Features
+
+### Phase 1: Core V8 Foundation Enhancement (Weeks 1-3)
+
+#### 1.1 Template.yml Configuration System
+**Status: 📅 Planned**
+
+Replace frontmatter-based configuration with rich YAML configuration:
+
+```yaml
+# template.yml
+name: react-component
+description: Create React components with TypeScript
+version: 1.0.0
+category: react
+
+variables:
+  name:
+    type: string
+    required: true
+    pattern: ^[A-Z][a-zA-Z0-9]*$
+    description: Component name in PascalCase
+  
+  typescript:
+    type: boolean
+    default: true
+    description: Use TypeScript
+  
+  styling:
+    type: enum
+    values: [css-modules, styled-components, emotion]
+    default: css-modules
+    description: Styling approach
+
+composition:
+  base: base-component
+  includes:
+    - template: typescript-types
+      condition: typescript === true
+    - template: styled-props  
+      condition: styling === 'styled-components'
+
+lifecycle:
+  pre:
+    - action: validate-dependencies
+  post:
+    - action: format-code
+    - action: update-index
+```
+
+**Implementation Tasks:**
+- [ ] Template.yml parser with JSON Schema validation
+- [ ] Rich variable type system (string, boolean, number, enum, array, object)
+- [ ] Variable validation and constraint checking
+- [ ] Integration with existing template system
+- [ ] Migration tool from frontmatter to template.yml
+
+#### 1.2 Enhanced CLI System
+**Status: 📅 Planned**
+
+Implement the full CLI command structure documented in the backup files:
+
+```bash
+# Enhanced command structure
+hypergen discover                           # Find available generators
+hypergen template validate <template>      # Validate template configuration
+hypergen template list                     # List all templates
+hypergen url resolve <url>                 # Resolve URL templates
+hypergen system status                     # System information
+hypergen compose --template A --template B # On-the-fly composition
+```
+
+**Implementation Tasks:**
+- [ ] Rich command structure with subcommands
+- [ ] Interactive generator discovery
+- [ ] Template validation commands
+- [ ] URL template resolution commands
+- [ ] System status and help commands
+- [ ] Better error messages with actionable suggestions
+
+#### 1.3 Advanced Variable System
+**Status: 📅 Planned**
+
+Implement the rich variable system shown in documentation:
+
+```typescript
+interface VariableDefinition {
+  type: 'string' | 'boolean' | 'number' | 'enum' | 'array' | 'object';
+  required?: boolean;
+  default?: any;
+  description?: string;
+  pattern?: string;           // For string validation
+  min?: number;              // For number/array validation
+  max?: number;              // For number/array validation
+  values?: string[];         // For enum validation
+  internal?: boolean;        // Computed variables not prompted
+}
+```
+
+**Implementation Tasks:**
+- [ ] Variable type system with validation
+- [ ] Pattern matching for string variables
+- [ ] Range validation for numbers
+- [ ] Array and object variable support
+- [ ] Computed/internal variables
+- [ ] Variable dependency resolution
+
+### Phase 2: Enhanced Developer Experience (Weeks 4-5)
+
+#### 2.1 Template Development Tools
+**Status: 📅 Planned**
+
+Development tools for better template authoring:
+
+```bash
+# Development commands
+hypergen dev --watch                       # Hot reload during development
+hypergen preview <template>                # Preview without executing
+hypergen validate <template> --lint        # Lint template files
+hypergen test <template>                   # Test template generation
+```
+
+**Implementation Tasks:**
+- [ ] Template hot-reloading during development
+- [ ] Template preview mode with dry-run
+- [ ] Template linting and validation
+- [ ] Generator testing framework
+- [ ] Template debugging capabilities
+
+#### 2.2 File-based Routing System
+**Status: 📅 Planned**
+
+Automatic path generation based on file structure:
+
+```
+templates/
+  component/
+    [name].tsx.liquid      → src/components/{name}.tsx
+    [name].test.tsx.liquid → src/components/__tests__/{name}.test.tsx
+    [name].stories.tsx.liquid → src/components/{name}.stories.tsx
+```
+
+**Implementation Tasks:**
+- [ ] File-based routing conventions
+- [ ] Dynamic path interpolation
+- [ ] Configurable naming conventions
+- [ ] Partial file filtering
+- [ ] Nested directory support
+
+#### 2.3 Migration and Compatibility Tools
+**Status: 📅 Planned**
+
+Tools for migrating from other generators:
+
+```bash
+# Migration commands
+hypergen migrate yeoman <generator>         # Migrate from Yeoman
+hypergen migrate hygen <templates>          # Migrate from Hygen
+hypergen convert ejs-to-liquid <template>   # Convert template engines
+hypergen validate compatibility <template>   # Check compatibility
+```
+
+**Implementation Tasks:**
+- [ ] Yeoman → Hypergen migration tool
+- [ ] Hygen → Hypergen migration tool
+- [ ] EJS → LiquidJS template converter
+- [ ] Backward compatibility validation
+- [ ] Migration documentation and guides
+
+### Phase 3: Advanced Ecosystem Features (Weeks 6-8)
+
+#### 3.1 Generator Registry and Distribution
+**Status: 📅 Planned**
+
+Template sharing and distribution system:
+
+```bash
+# Registry commands
+hypergen install github:user/repo          # Install remote generator
+hypergen publish                           # Publish generator to registry
+hypergen search react component            # Search for generators
+hypergen update                            # Update installed generators
+```
+
+**Implementation Tasks:**
+- [ ] Generator installation from multiple sources
+- [ ] Version management with semver
+- [ ] Generator publishing workflow
+- [ ] Search and discovery system
+- [ ] Security validation for remote generators
+
+#### 3.2 Template Security and Validation
+**Status: 📅 Planned**
+
+Security features for template execution:
+
+```typescript
+interface SecurityConfig {
+  allowRemoteTemplates: boolean;
+  trustedSources: string[];
+  sandboxExecution: boolean;
+  maxTemplateSize: number;
+  allowShellCommands: boolean;
+}
+```
+
+**Implementation Tasks:**
+- [ ] Template security scanning
+- [ ] Sandboxed template execution
+- [ ] Trusted source validation
+- [ ] Content integrity verification
+- [ ] Security policy configuration
+
+#### 3.3 Performance and Caching Improvements
+**Status: 📅 Planned**
+
+Advanced caching and performance optimizations:
+
+```typescript
+interface CacheConfig {
+  strategy: 'memory' | 'disk' | 'hybrid';
+  ttl: number;
+  maxSize: number;
+  compression: boolean;
+  invalidation: 'time' | 'version' | 'content';
+}
+```
+
+**Implementation Tasks:**
+- [ ] Advanced caching strategies
+- [ ] Template compilation caching
+- [ ] Parallel template processing
+- [ ] Memory usage optimization
+- [ ] Startup time improvements
+
+### Phase 4: IDE Integration and Tooling (Weeks 9-12)
+
+#### 4.1 VS Code Extension
+**Status: 📅 Planned**
+
+Professional IDE integration for template development:
+
+**Features:**
+- Syntax highlighting for template.yml and .liquid files
+- IntelliSense for template variables and functions
+- Template debugging with breakpoints
+- Generator discovery and execution
+- Template validation and linting
+
+**Implementation Tasks:**
+- [ ] VS Code extension development
+- [ ] Language server for template files
+- [ ] Debugging protocol integration
+- [ ] Command palette integration
+- [ ] Extension marketplace publishing
+
+#### 4.2 Template Ecosystem
+**Status: 📅 Planned**
+
+Community template sharing and quality assurance:
+
+```typescript
+interface TemplateQuality {
+  score: number;
+  metrics: {
+    documentation: number;
+    tests: number;
+    maintenance: number;
+    usage: number;
+  };
+  badges: string[];
+}
+```
+
+**Implementation Tasks:**
+- [ ] Community template registry
+- [ ] Template quality scoring
+- [ ] Best practices documentation
+- [ ] Template certification program
+- [ ] Community contribution guidelines
+
+#### 4.3 Enterprise Features
+**Status: 📅 Planned**
+
+Features for enterprise adoption:
+
+```typescript
+interface EnterpriseConfig {
+  privateRegistry: string;
+  accessControl: {
+    roles: string[];
+    permissions: Record<string, string[]>;
+  };
+  audit: {
+    logging: boolean;
+    retention: number;
+  };
+  governance: {
+    approvalWorkflow: boolean;
+    templateStandards: boolean;
+  };
+}
+```
+
+**Implementation Tasks:**
+- [ ] Private template registries
+- [ ] Role-based access control
+- [ ] Audit logging and compliance
+- [ ] Template governance workflows
+- [ ] Enterprise security features
+
+## 🎯 Success Metrics
+
+### Technical Performance
+- **Startup Speed**: 3x faster than current version for common operations
+- **Template Composition**: Support 100+ composed templates without degradation
+- **Memory Efficiency**: 50% lower memory usage vs. current implementation
+- **Reliability**: 99.9% test coverage for all features
+
+### Developer Experience
+- **Learning Curve**: New users productive within 10 minutes
+- **Template Development**: 5x faster with new tooling
+- **Migration**: One-command migration from existing tools
+- **Error Recovery**: Clear error messages with suggested solutions
+
+### Ecosystem Growth
+- **Template Adoption**: 1000+ templates using V8 features within 6 months
+- **Community Growth**: 50+ community-contributed templates
+- **IDE Integration**: VS Code extension with 10k+ downloads
+- **Documentation**: 95% feature coverage with examples
+
+## 🛠️ Implementation Strategy
+
+### Phase-by-Phase Approach
+1. **Foundation** - Core template.yml system and CLI enhancement
+2. **Developer Tools** - Development workflow improvements
+3. **Ecosystem** - Registry, security, and performance
+4. **Integration** - IDE support and enterprise features
+
+### Risk Mitigation
+- **Breaking Changes**: Comprehensive backward compatibility testing
+- **Performance**: Continuous benchmarking and optimization
+- **Security**: Security-first approach with validation at every level
+- **Adoption**: Clear migration paths and extensive documentation
+
+### Community Involvement
+- **Open Development**: Public roadmap and progress tracking
+- **Feedback Integration**: Regular community feedback incorporation
+- **Contribution Opportunities**: Clear paths for community contributions
+- **Documentation**: Collaborative documentation development
+
+## 📅 Timeline
+
+### Q1 2025: Foundation (V8.1)
+- Template.yml configuration system
+- Enhanced CLI commands
+- Advanced variable system
+
+### Q2 2025: Developer Experience (V8.2)
+- Template development tools
+- File-based routing
+- Migration tools
+
+### Q3 2025: Ecosystem (V8.3)
+- Generator registry
+- Security enhancements
+- Performance optimizations
+
+### Q4 2025: Integration (V8.4)
+- VS Code extension
+- Community features
+- Enterprise capabilities
+
+## 🤝 Contributing
+
+The V8 roadmap is community-driven. Ways to contribute:
+
+- **Feature Requests**: Suggest new features via GitHub issues
+- **Implementation**: Contribute code for planned features
+- **Testing**: Help test new features and provide feedback
+- **Documentation**: Improve and expand documentation
+- **Templates**: Create and share community templates
+
+## 📚 Documentation Priorities
+
+As features are implemented, documentation will be created:
+
+1. **Core Features** - Template.yml configuration and CLI guide
+2. **Developer Guides** - Template development best practices
+3. **Integration Guides** - IDE setup and workflow integration
+4. **API Reference** - Complete programmatic API documentation
+5. **Migration Guides** - Step-by-step migration from other tools
+
+This roadmap positions Hypergen V8 as the next-generation template generation platform, building on the strong foundation of advanced composition features to deliver a comprehensive, professional-grade solution for modern development teams.

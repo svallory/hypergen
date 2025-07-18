@@ -1,0 +1,84 @@
+---
+title: Hypergen V8 Documentation
+description: Advanced template composition and workflow orchestration for modern development
+---
+
+# Hypergen V8
+
+Hypergen V8 is a powerful template generation engine with advanced composition capabilities, workflow orchestration, and inter-action communication. It extends the core Hypergen functionality with sophisticated features for complex project scaffolding and code generation workflows.
+
+## Key Features
+
+### 🧬 Template Composition
+- **Template Inheritance**: Create base templates that can be extended by child templates
+- **Conflict Resolution**: Intelligent merging strategies for handling template conflicts
+- **Conditional Includes**: Include templates based on dynamic conditions and variables
+
+### 🔄 Workflow Orchestration  
+- **Action Pipelines**: Chain actions together with dependencies and parallel execution
+- **Lifecycle Management**: Pre/post/error hooks for comprehensive workflow control
+- **Cross-Action Communication**: Share state and coordinate between different actions
+
+### 📦 Dependency Management
+- **Semantic Versioning**: Version-aware template dependencies
+- **Multiple Sources**: Support for npm, GitHub, local, and HTTP dependencies
+- **Dependency Resolution**: Automatic conflict detection and resolution
+
+### 🔧 Advanced Configuration
+- **Template Versioning**: Semantic versioning for templates with engine compatibility
+- **Environment Variables**: Template-specific environment configuration
+- **Plugin System**: Extensible architecture for custom functionality
+
+## Quick Start
+
+```bash
+# Install Hypergen V8
+npm install @hypergen/core
+
+# Create a new project with advanced composition
+hypergen action create-fullstack-app --name MyApp --framework react
+```
+
+## Documentation Sections
+
+### 🚀 Getting Started
+- **[Getting Started Guide](./getting-started)** - Installation, setup, and basic usage
+- **[V8 Features Overview](./v8-features)** - Complete list of implemented features
+- **[Advanced Composition Guide](./advanced-composition)** - Deep dive into all composition features
+
+### 🔧 Advanced Features  
+- **Template Inheritance** - Create reusable base templates with conflict resolution
+- **Conditional Templates** - Dynamic template inclusion based on variables
+- **Action Pipelines** - Complex workflow orchestration with dependencies
+- **Cross-Action Communication** - State sharing and messaging between actions
+- **Dependency Management** - Semantic versioning and multi-source dependencies
+
+### 📋 Development
+- **[V8 Roadmap](./v8-roadmap)** - Planned features and future enhancements
+
+## Architecture
+
+Hypergen V8 is built on a modular architecture that enables:
+
+- **Composable Templates**: Build complex generators from simple, reusable components
+- **Scalable Workflows**: Handle large-scale code generation with parallel processing
+- **Type Safety**: Full TypeScript support with intelligent type inference
+- **Performance**: Optimized for speed with lazy loading and caching
+
+## Migration from V7
+
+Hypergen V8 is largely backward compatible with V7, with enhanced capabilities:
+
+- Existing templates work without modification
+- New composition features are opt-in
+- Configuration format has minor updates
+- CLI commands remain the same with new options
+
+## Community
+
+- **GitHub**: [svallory/hypergen](https://github.com/svallory/hypergen)
+- **Documentation**: This site
+- **Issues**: Report bugs and request features on GitHub
+- **Discussions**: Join the community discussions
+
+Get started with the [Getting Started Guide](./getting-started) or explore the [Advanced Composition Features](./advanced-composition) to see all the new capabilities in Hypergen V8.

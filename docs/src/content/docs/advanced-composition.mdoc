@@ -1,0 +1,675 @@
+---
+title: Advanced Composition Features
+description: Complete guide to Hypergen V8's advanced template composition, workflow orchestration, and inter-action communication capabilities
+---
+
+# Advanced Composition Features
+
+Hypergen V8 introduces powerful advanced composition capabilities that enable complex template inheritance, workflow orchestration, and inter-action communication. This document provides a comprehensive guide to these features.
+
+## Table of Contents
+
+- [Template Inheritance and Composition](#template-inheritance-and-composition)
+- [Conditional Template Inclusion](#conditional-template-inclusion)
+- [Template Versioning and Dependencies](#template-versioning-and-dependencies)
+- [Action Lifecycle Management](#action-lifecycle-management)
+- [Cross-Action Communication](#cross-action-communication)
+- [Action Pipelines and Workflows](#action-pipelines-and-workflows)
+- [Integration Examples](#integration-examples)
+- [Best Practices](#best-practices)
+
+## Template Inheritance and Composition
+
+### Overview
+
+Template inheritance allows you to create base templates that can be extended by child templates, promoting code reuse and maintainability.
+
+### Basic Inheritance
+
+```yaml
+# base-component.yml
+name: base-component
+version: 1.0.0
+variables:
+  name:
+    type: string
+    required: true
+  framework:
+    type: enum
+    values: [react, vue, angular]
+    default: react
+outputs:
+  - "{{name}}.{{framework === 'react' ? 'tsx' : 'vue'}}"
+```
+
+```yaml
+# react-component.yml
+name: react-component
+extends: base-component
+version: 1.0.0
+variables:
+  withProps:
+    type: boolean
+    default: true
+  styling:
+    type: enum
+    values: [css, scss, styled-components]
+    default: css
+outputs:
+  - "{{name}}.stories.tsx"
+  - "{{name}}.test.tsx"
+```
+
+### Conflict Resolution
+
+When parent and child templates have conflicting variables or configurations, you can control how conflicts are resolved:
+
+```yaml
+name: child-template
+extends: parent-template
+conflicts:
+  strategy: merge  # Global strategy: merge, replace, extend, error
+  rules:
+    specificVariable: replace
+    anotherVariable: extend
+```
+
+**Resolution Strategies:**
+- `merge`: Combine values intelligently
+- `replace`: Child value overrides parent
+- `extend`: Additive merge (for arrays/objects)
+- `error`: Throw error on conflict
+
+### Template Includes
+
+Include other templates conditionally:
+
+```yaml
+name: main-template
+includes:
+  - url: shared/common-styles
+    condition: "framework === 'react'"
+    variables:
+      theme: dark
+  - url: testing/jest-setup
+    condition: "withTests === true"
+    strategy: merge
+```
+
+## Conditional Template Inclusion
+
+### Expression Evaluation
+
+Conditions support safe JavaScript-like expressions:
+
+```yaml
+includes:
+  - url: typescript-config
+    condition: "language === 'typescript'"
+  - url: eslint-config
+    condition: "linting === true && framework === 'react'"
+  - url: docker-setup
+    condition: "deployment.includes('docker')"
+```
+
+### Variable References
+
+Conditions can reference any template variable:
+
+```yaml
+variables:
+  environment: production
+  features:
+    - authentication
+    - analytics
+
+includes:
+  - url: auth-module
+    condition: "features.includes('authentication')"
+  - url: analytics-setup
+    condition: "environment === 'production' && features.includes('analytics')"
+```
+
+## Template Versioning and Dependencies
+
+### Semantic Versioning
+
+Templates support semantic versioning for dependency management:
+
+```yaml
+name: my-template
+version: 2.1.0
+engines:
+  hypergen: ">=8.0.0"
+dependencies:
+  - name: react
+    version: "^18.0.0"
+    type: npm
+  - name: user/shared-components
+    version: "1.2.x"
+    type: github
+  - name: ./local-utils
+    type: local
+  - name: https://cdn.example.com/templates/ui-kit
+    version: latest
+    type: http
+    optional: true
+```
+
+### Dependency Types
+
+- **npm**: NPM packages
+- **github**: GitHub repositories (user/repo format)
+- **local**: Local file system paths
+- **http**: HTTP URLs to template archives
+
+### Dependency Resolution
+
+The dependency manager automatically:
+- Resolves version constraints
+- Detects conflicts between dependencies
+- Downloads and caches remote templates
+- Validates dependency integrity
+
+## Action Lifecycle Management
+
+### Hook System
+
+Actions can have hooks that execute at different lifecycle phases:
+
+```typescript
+import { action } from '@hypergen/core'
+
+@action({
+  name: 'create-component',
+  hooks: {
+    pre: [
+      {
+        name: 'validate-prerequisites',
+        priority: 100,
+        condition: 'variables.name !== undefined'
+      }
+    ],
+    post: [
+      {
+        name: 'format-files',
+        priority: 50
+      },
+      {
+        name: 'install-dependencies',
+        priority: 10,
+        condition: 'files.some(f => f.includes("package.json"))'
+      }
+    ],
+    error: [
+      {
+        name: 'cleanup-failed-generation',
+        priority: 100
+      }
+    ]
+  }
+})
+export async function createComponent(context: ActionContext): Promise<ActionResult> {
+  // Your action implementation
+}
+```
+
+### Built-in Hooks
+
+Hypergen provides several built-in hooks:
+
+- `format-files`: Format generated files using prettier/eslint
+- `install-dependencies`: Install npm dependencies if package.json is modified
+- `git-init`: Initialize git repository if needed
+- `backup-files`: Create backup before overwriting files
+- `validate-prerequisites`: Check system requirements
+
+### Custom Hooks
+
+Create custom hooks for your workflow:
+
+```typescript
+import { LifecycleHook } from '@hypergen/core'
+
+export const customValidationHook: LifecycleHook = {
+  name: 'custom-validation',
+  priority: 90,
+  phase: 'pre',
+  condition: 'variables.validate === true',
+  execute: async (context) => {
+    // Custom validation logic
+    return { success: true, message: 'Validation passed' }
+  }
+}
+```
+
+## Cross-Action Communication
+
+### Action State Management
+
+Actions can register themselves and track state:
+
+```typescript
+export async function createComponent(context: ActionContext): Promise<ActionResult> {
+  const { communication } = context
+  
+  // Register action
+  communication.registerAction('create-component-123', 'create-component', {
+    componentName: context.variables.name
+  })
+  
+  // Update state during execution
+  communication.updateActionState('create-component-123', {
+    progress: 50,
+    currentStep: 'generating-files'
+  })
+  
+  // Complete action
+  communication.completeAction('create-component-123', {
+    filesCreated: ['Component.tsx', 'Component.test.tsx']
+  })
+}
+```
+
+### Inter-Action Messaging
+
+Actions can send messages to each other:
+
+```typescript
+// Send targeted message
+context.communication.sendMessage('file-generated', {
+  fileName: 'Component.tsx',
+  path: '/src/components'
+}, 'test-generator-456')
+
+// Send broadcast message
+context.communication.sendMessage('build-complete', {
+  success: true,
+  artifacts: ['dist/bundle.js']
+})
+
+// Subscribe to messages
+const unsubscribe = context.communication.subscribeToMessages(
+  'file-generated',
+  (message) => {
+    console.log('File generated:', message.payload.fileName)
+  }
+)
+```
+
+### Shared Data Store
+
+Share data between actions:
+
+```typescript
+// Set shared data
+context.communication.setSharedData('projectConfig', {
+  name: 'MyProject',
+  version: '1.0.0',
+  framework: 'react'
+})
+
+// Get shared data
+const config = context.communication.getSharedData('projectConfig')
+
+// Wait for another action to complete
+const otherActionState = await context.communication.waitForAction(
+  'dependency-analyzer-789',
+  30000 // 30 second timeout
+)
+```
+
+## Action Pipelines and Workflows
+
+### Pipeline Definition
+
+Create complex workflows with dependencies and parallel execution:
+
+```yaml
+name: react-component-pipeline
+description: Complete React component generation workflow
+version: 1.0.0
+
+variables:
+  componentName: UserProfile
+  withTests: true
+  withStorybook: true
+
+steps:
+  # Parallel setup phase
+  - id: validate-prerequisites
+    name: validate-environment
+    parallel: true
+    
+  - id: analyze-dependencies
+    name: analyze-project-dependencies
+    parallel: true
+    
+  # Build phase (depends on setup)
+  - id: generate-component
+    name: create-react-component
+    dependsOn: [validate-prerequisites, analyze-dependencies]
+    parameters:
+      name: "{{componentName}}"
+      withProps: true
+      styling: styled-components
+    retries: 2
+    timeout: 30000
+    
+  # Parallel enhancement phase
+  - id: generate-tests
+    name: create-component-tests
+    dependsOn: [generate-component]
+    condition: "withTests === true"
+    parallel: true
+    parameters:
+      componentName: "{{componentName}}"
+      testType: unit
+      
+  - id: generate-stories
+    name: create-storybook-stories
+    dependsOn: [generate-component]
+    condition: "withStorybook === true"
+    parallel: true
+    parameters:
+      componentName: "{{componentName}}"
+      
+  # Finalization
+  - id: update-exports
+    name: update-index-exports
+    dependsOn: [generate-tests, generate-stories]
+    parameters:
+      componentName: "{{componentName}}"
+      
+  - id: format-code
+    name: format-generated-files
+    dependsOn: [update-exports]
+    continueOnError: true
+
+hooks:
+  beforePipeline:
+    - backup-project-state
+  afterPipeline:
+    - cleanup-temp-files
+    - commit-changes
+  onError:
+    - restore-project-state
+    - send-error-notification
+
+settings:
+  timeout: 300000  # 5 minutes
+  retries: 1
+  continueOnError: false
+  parallel: true
+  maxParallelSteps: 3
+```
+
+### Executing Pipelines
+
+```typescript
+import { getPipelineManager } from '@hypergen/core'
+
+const pipelineManager = getPipelineManager()
+
+// Register pipeline
+pipelineManager.registerPipeline(pipelineConfig)
+
+// Execute pipeline
+const execution = await pipelineManager.executePipeline(
+  'react-component-pipeline',
+  { componentName: 'UserCard', withTests: true }
+)
+
+console.log('Pipeline status:', execution.status)
+console.log('Steps completed:', execution.metadata.completedSteps)
+console.log('Files created:', execution.steps.flatMap(s => s.result?.filesCreated || []))
+```
+
+### Pipeline Monitoring
+
+```typescript
+// Get execution status
+const stats = pipelineManager.getStats()
+console.log('Running pipelines:', stats.runningExecutions)
+
+// Get specific execution
+const execution = pipelineManager.getExecution('pipeline-123')
+if (execution) {
+  console.log('Current step:', execution.steps.find(s => s.status === 'running')?.stepId)
+}
+
+// Cancel running pipeline
+await pipelineManager.cancelExecution('pipeline-123')
+```
+
+## Integration Examples
+
+### Full Stack Application Generation
+
+```yaml
+name: fullstack-app-pipeline
+description: Generate complete full-stack application
+
+steps:
+  # Backend setup
+  - id: api-setup
+    name: create-api-server
+    parameters:
+      framework: express
+      database: postgresql
+      authentication: jwt
+      
+  # Frontend setup (parallel)
+  - id: frontend-setup
+    name: create-react-app
+    parallel: true
+    parameters:
+      framework: react
+      typescript: true
+      styling: tailwind
+      
+  # Database setup (parallel)
+  - id: database-setup
+    name: setup-database
+    parallel: true
+    parameters:
+      type: postgresql
+      migrations: true
+      
+  # Integration layer
+  - id: api-integration
+    name: generate-api-client
+    dependsOn: [api-setup, frontend-setup]
+    parameters:
+      apiUrl: "{{apiSetup.baseUrl}}"
+      authentication: jwt
+      
+  # Testing setup
+  - id: setup-testing
+    name: configure-testing
+    dependsOn: [api-integration, database-setup]
+    parameters:
+      unitTests: true
+      integrationTests: true
+      e2eTests: true
+      
+  # Deployment configuration
+  - id: deployment-config
+    name: setup-deployment
+    dependsOn: [setup-testing]
+    condition: "environment === 'production'"
+    parameters:
+      platform: docker
+      ci: github-actions
+```
+
+### Micro-frontend Architecture
+
+```yaml
+name: microfrontend-pipeline
+description: Generate micro-frontend architecture
+
+variables:
+  applications:
+    - name: shell
+      type: host
+    - name: products
+      type: remote
+    - name: checkout
+      type: remote
+
+steps:
+  # Generate shell application
+  - id: create-shell
+    name: create-mf-shell
+    parameters:
+      name: "{{applications[0].name}}"
+      remotes: "{{applications.filter(a => a.type === 'remote').map(a => a.name)}}"
+      
+  # Generate remote applications (parallel)
+  - id: create-remotes
+    name: create-mf-remote
+    dependsOn: [create-shell]
+    parallel: true
+    forEach: "{{applications.filter(a => a.type === 'remote')}}"
+    parameters:
+      name: "{{item.name}}"
+      host: "{{applications[0].name}}"
+      
+  # Setup shared dependencies
+  - id: setup-shared
+    name: setup-shared-dependencies
+    dependsOn: [create-remotes]
+    parameters:
+      applications: "{{applications.map(a => a.name)}}"
+      
+  # Integration testing
+  - id: integration-tests
+    name: create-integration-tests
+    dependsOn: [setup-shared]
+    parameters:
+      scenarios: cross-app-navigation
+```
+
+## Best Practices
+
+### Template Design
+
+1. **Use Inheritance Wisely**: Create base templates for common patterns
+2. **Keep Conditions Simple**: Use clear, readable condition expressions
+3. **Version Dependencies**: Always specify version constraints
+4. **Document Variables**: Provide clear descriptions and examples
+
+### Pipeline Design
+
+1. **Minimize Dependencies**: Reduce step dependencies for better parallelization
+2. **Use Retries**: Add retries for network-dependent operations
+3. **Set Timeouts**: Prevent pipelines from hanging indefinitely
+4. **Handle Errors**: Use `continueOnError` appropriately
+5. **Monitor Progress**: Use communication system for progress tracking
+
+### Performance Optimization
+
+1. **Parallel Execution**: Mark independent steps as parallel
+2. **Lazy Loading**: Only load templates when needed
+3. **Cache Dependencies**: Use dependency caching for better performance
+4. **Batch Operations**: Group related file operations
+
+### Error Handling
+
+1. **Graceful Degradation**: Use optional dependencies and `continueOnError`
+2. **Rollback Strategies**: Implement cleanup hooks for failed operations
+3. **Error Context**: Provide detailed error information
+4. **Recovery Procedures**: Document manual recovery steps
+
+### Security Considerations
+
+1. **Validate Inputs**: Always validate user inputs and template parameters
+2. **Sanitize Expressions**: Use safe expression evaluation
+3. **Limit Permissions**: Restrict file system access where possible
+4. **Audit Dependencies**: Regularly audit template dependencies
+
+## API Reference
+
+### Template Configuration
+
+```typescript
+interface TemplateConfig {
+  name: string
+  version: string
+  description?: string
+  author?: string
+  engines?: Record<string, string>
+  extends?: string
+  includes?: TemplateInclude[]
+  variables: Record<string, TemplateVariable>
+  dependencies?: (string | TemplateDependency)[]
+  outputs?: string[]
+  conflicts?: ConflictResolution
+}
+```
+
+### Pipeline Configuration
+
+```typescript
+interface PipelineConfig {
+  name: string
+  description?: string
+  version?: string
+  variables?: Record<string, any>
+  steps: PipelineStep[]
+  hooks?: PipelineHooks
+  settings?: PipelineSettings
+}
+```
+
+### Communication API
+
+```typescript
+interface ActionCommunication {
+  sendMessage(type: string, payload: any, target?: string): void
+  subscribeToMessages(type: string, handler: (message: ActionMessage) => void): () => void
+  setSharedData(key: string, value: any): void
+  getSharedData(key: string): any
+  waitForAction(actionId: string, timeout?: number): Promise<ActionState>
+}
+```
+
+## Migration Guide
+
+### From Hypergen V7
+
+1. **Template Files**: No changes required for basic templates
+2. **Action System**: Update to use new decorator-based actions
+3. **Configuration**: Update `hypergen.json` to `hypergen.config.js`
+4. **CLI Commands**: Some commands have new syntax (see CLI reference)
+
+### Breaking Changes
+
+- Configuration file format changed
+- Action registration system updated
+- Some CLI command names changed
+- Template variable types expanded
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Template Resolution Errors**: Check URL formats and network connectivity
+2. **Dependency Conflicts**: Use explicit version constraints
+3. **Pipeline Failures**: Check step dependencies and conditions
+4. **Performance Issues**: Enable parallel execution and caching
+
+### Debug Mode
+
+Enable debug logging for detailed information:
+
+```bash
+DEBUG=hypergen:* hypergen action my-action
+```
+
+### Support
+
+- Documentation: https://hypergen.dev/docs
+- Issues: https://github.com/svallory/hypergen/issues
+- Community: https://hypergen.dev/community

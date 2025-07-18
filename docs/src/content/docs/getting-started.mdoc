@@ -1,0 +1,399 @@
+---
+title: Getting Started with Hypergen V8
+description: Learn how to install and use Hypergen V8's advanced template composition features
+---
+
+# Getting Started with Hypergen V8
+
+Hypergen V8 is a modern template generation engine with powerful composition capabilities. This guide will walk you through installation, basic usage, and the new advanced features.
+
+## Installation
+
+```bash
+# Install globally
+npm install -g hypergen
+
+# Or use with bun
+bun install -g hypergen
+
+# Or use with npx
+npx hypergen --help
+```
+
+## Quick Start
+
+### 1. Initialize a Project
+
+Create a new Hypergen workspace:
+
+```bash
+# Create project directory
+mkdir my-project && cd my-project
+
+# Initialize with templates
+hypergen init workspace
+```
+
+### 2. Basic Template Generation
+
+Hypergen V8 maintains compatibility with existing EJS templates while adding advanced composition features:
+
+```bash
+# Run a basic generator
+hypergen my-generator new --name MyComponent
+```
+
+## What's New in V8
+
+### ✨ Advanced Composition Features
+
+Hypergen V8 introduces six major advanced composition capabilities:
+
+#### 🧬 Template Inheritance and Composition
+- Create base templates that can be extended by child templates
+- Intelligent conflict resolution for template merging
+- Hierarchical template organization
+
+#### 🔀 Conditional Template Inclusion
+- Include templates based on dynamic conditions
+- Variable-based template selection
+- Safe expression evaluation
+
+#### 📦 Template Versioning and Dependencies
+- Semantic versioning for templates
+- Dependency management with conflict resolution
+- Support for npm, GitHub, local, and HTTP dependencies
+
+#### 🔄 Action Lifecycle Management
+- Pre/post/error hooks for comprehensive workflow control
+- Built-in lifecycle events
+- Custom hook development
+
+#### 🤝 Cross-Action Communication
+- Share state between different actions
+- Inter-action messaging system
+- Coordinated workflow execution
+
+#### ⚡ Action Pipelines and Workflows
+- Chain actions with dependencies
+- Parallel execution support
+- Complex workflow orchestration
+
+## Core Concepts
+
+### Templates
+Templates are EJS-based files with frontmatter configuration that define the structure of generated code:
+
+```ejs
+---
+to: src/components/<%= name %>.tsx
+inject: false
+---
+import React from 'react';
+
+interface <%= name %>Props {
+  // Component props
+}
+
+export const <%= name %>: React.FC<<%= name %>Props> = (props) => {
+  return <div>Hello from <%= name %>!</div>;
+};
+```
+
+### Actions
+Actions are TypeScript functions decorated with `@action` that perform code generation:
+
+```typescript
+import { action } from 'hypergen/decorators';
+import { ActionContext, ActionResult } from 'hypergen/types';
+
+@action({
+  name: 'create-component',
+  description: 'Create a React component',
+  category: 'react'
+})
+export async function createComponent(
+  context: ActionContext
+): Promise<ActionResult> {
+  // Implementation
+  return { success: true };
+}
+```
+
+### Generators
+Generators are collections of templates and actions organized in directories:
+
+```
+_templates/
+  my-generator/
+    ├── actions.ts          # Action definitions
+    ├── template.yml        # Configuration
+    └── templates/
+        ├── component.tsx.ejs.t
+        └── test.tsx.ejs.t
+```
+
+## V8 Advanced Features
+
+### Template Composition Example
+
+Create composable templates with inheritance:
+
+```typescript
+// Enhanced template composition
+import { TemplateCompositionEngine } from 'hypergen/composition';
+
+const engine = new TemplateCompositionEngine();
+
+// Load base template with inheritance
+const result = await engine.composeTemplate({
+  base: 'base-component',
+  includes: ['react-props', 'typescript-types'],
+  variables: {
+    name: 'MyButton',
+    withProps: true,
+    styling: 'styled-components'
+  }
+});
+```
+
+### Conditional Template Inclusion
+
+Include templates based on conditions:
+
+```typescript
+import { ConditionalTemplateInclude } from 'hypergen/composition';
+
+const includeEngine = new ConditionalTemplateInclude();
+
+// Include templates conditionally
+const shouldInclude = includeEngine.evaluateCondition(
+  'framework === "react" && typescript === true',
+  { framework: 'react', typescript: true }
+);
+```
+
+### Lifecycle Management
+
+Manage complex workflows with hooks:
+
+```typescript
+import { ActionLifecycleManager } from 'hypergen/lifecycle';
+
+const lifecycle = new ActionLifecycleManager();
+
+// Register lifecycle hooks
+await lifecycle.registerHook('pre-generation', async (context) => {
+  console.log('Starting generation...');
+});
+
+await lifecycle.registerHook('post-generation', async (context) => {
+  console.log('Generation complete!');
+});
+```
+
+### Cross-Action Communication
+
+Coordinate between actions:
+
+```typescript
+import { ActionCommunicationManager } from 'hypergen/communication';
+
+const comm = new ActionCommunicationManager();
+
+// Share state between actions
+await comm.setState('component-name', 'MyButton');
+await comm.broadcastMessage('component-created', { name: 'MyButton' });
+
+// Wait for action completion
+await comm.waitForAction('style-generation');
+```
+
+### Action Pipelines
+
+Orchestrate complex workflows:
+
+```typescript
+import { ActionPipelineManager } from 'hypergen/pipelines';
+
+const pipeline = new ActionPipelineManager();
+
+// Define a complex pipeline
+await pipeline.executePipeline('full-component-setup', {
+  name: 'MyButton'
+}, {
+  projectRoot: process.cwd(),
+  logger: console
+});
+```
+
+## Configuration
+
+### Hypergen Configuration
+
+Create a `hypergen.json` file in your project root:
+
+```json
+{
+  "templates": ["_templates", "node_modules/@company/templates"],
+  "conflictResolutionStrategy": "interactive",
+  "helpers": "./helpers.js",
+  "composition": {
+    "enableInheritance": true,
+    "enableConditionalIncludes": true,
+    "enableDependencyManagement": true
+  }
+}
+```
+
+### Template Configuration
+
+Each generator can have a `template.yml` configuration:
+
+```yaml
+name: react-component
+description: Create React components with advanced composition
+version: 1.0.0
+category: react
+
+variables:
+  name:
+    type: string
+    required: true
+    description: Component name
+  
+  typescript:
+    type: boolean
+    default: true
+    description: Use TypeScript
+
+composition:
+  base: base-component
+  includes:
+    - typescript-props
+    - react-hooks
+  
+lifecycle:
+  pre:
+    - check-dependencies
+  post:
+    - format-code
+    - update-index
+```
+
+## Development Workflow
+
+### 1. Create a Generator
+
+```bash
+# Generate a new generator
+hypergen init generator --name my-generator --advanced-composition
+```
+
+### 2. Define Templates
+
+Create template files with composition support:
+
+```ejs
+---
+to: src/<%= name %>.tsx
+composition:
+  base: base-component
+  conditional_includes:
+    - template: typescript-types
+      condition: typescript === true
+    - template: styled-props
+      condition: styling === 'styled-components'
+---
+// Your template content here
+```
+
+### 3. Test Composition
+
+```bash
+# Test template composition
+hypergen compose --template my-generator --name TestComponent --typescript
+```
+
+### 4. Execute with Pipelines
+
+```bash
+# Run complete pipeline
+hypergen pipeline full-setup --name MyApp --framework react
+```
+
+## Migration from V7
+
+Hypergen V8 is largely backward compatible:
+
+- ✅ Existing templates work without modification
+- ✅ Current CLI commands remain the same
+- ✅ Configuration files are compatible
+- ✅ New features are opt-in
+
+### Upgrading
+
+```bash
+# Update to V8
+npm update hypergen
+
+# Migrate configuration (if needed)
+hypergen migrate config --from v7 --to v8
+
+# Enable advanced features
+hypergen config set composition.enableInheritance true
+```
+
+## Next Steps
+
+### Learn Advanced Features
+- [Advanced Composition Guide](./advanced-composition) - Complete feature walkthrough
+- Action Development - Creating custom actions with decorators
+- Template Best Practices - Designing reusable templates
+
+### Explore Examples
+- React Component Generator with composition
+- Full-Stack Application scaffolding
+- Microservice template orchestration
+
+### Community
+- **GitHub**: [svallory/hypergen](https://github.com/svallory/hypergen)
+- **Documentation**: This site
+- **Issues**: Report bugs and request features
+
+## Troubleshooting
+
+### Common Issues
+
+**Templates not found**
+```bash
+# Refresh generator discovery
+hypergen discover --refresh
+```
+
+**Composition conflicts**
+```bash
+# Check template conflicts
+hypergen validate composition --template my-generator
+```
+
+**Action execution errors**
+```bash
+# Debug action execution
+hypergen action my-action --debug --dry-run
+```
+
+**Pipeline failures**
+```bash
+# Examine pipeline execution
+hypergen pipeline debug --name my-pipeline
+```
+
+### Getting Help
+
+- Use built-in help: `hypergen help`
+- Check action info: `hypergen info <action-name>`
+- Validate templates: `hypergen validate <template>`
+- View system status: `hypergen status`
+
+Happy generating with Hypergen V8! 🚀
