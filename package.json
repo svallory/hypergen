@@ -35,7 +35,7 @@
 	"scripts": {
 		"standalone": "rm -rf standalone; bun run build:lib && bun pkg package.json --out-path standalone && bun scripts/standalone.js",
 		"standalone:brew-sha": "shasum -a 256 standalone/*.macos.*.tar.gz",
-		"build:changelog": "bunx conventional-changelog -i CHANGELOG.md -p angular > CHANGELOG.md",
+		"build:changelog": "bunx conventional-changelog -i CHANGELOG.md -p angular -s",
 		"build:lib": "bun run tsc",
 		"prebuild": "echo 'Building...'",
 		"build": "bun run build:lib && bun run build:changelog",
