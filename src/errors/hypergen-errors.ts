@@ -77,6 +77,7 @@ export interface ErrorContext {
   value?: any
   expected?: string
   received?: string
+  channel?: string
   // Template-related context
   templatePath?: string
   template?: string

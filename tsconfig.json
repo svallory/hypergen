@@ -11,10 +11,11 @@
     "pretty": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "types": ["bun-types", "react"],
+    "types": ["bun-types"],
     "resolveJsonModule": true,
     "rootDir": "src",
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "~/*": ["src/*"]
     }

@@ -23,8 +23,8 @@ export class LiquidTemplateEngine implements TemplateEngine {
         readFileSync: (file: string) => fs.readFileSync(file, 'utf8'),
         existsSync: (file: string) => fs.existsSync(file),
         resolve: (root: string, file: string, ext: string) => path.resolve(root, file + ext),
-        exists: (file: string) => fs.existsSync(file),
-        readFile: (file: string) => fs.readFileSync(file, 'utf8'),
+        exists: async (file: string) => fs.existsSync(file),
+        readFile: async (file: string) => fs.readFileSync(file, 'utf8'),
       },
       // Default configuration
       cache: true,
@@ -75,8 +75,8 @@ export class LiquidTemplateEngine implements TemplateEngine {
         readFileSync: (file: string) => fs.readFileSync(file, 'utf8'),
         existsSync: (file: string) => fs.existsSync(file),
         resolve: (root: string, file: string, ext: string) => path.resolve(root, file + ext),
-        exists: (file: string) => fs.existsSync(file),
-        readFile: (file: string) => fs.readFileSync(file, 'utf8'),
+        exists: async (file: string) => fs.existsSync(file),
+        readFile: async (file: string) => fs.readFileSync(file, 'utf8'),
       },
     })
     
